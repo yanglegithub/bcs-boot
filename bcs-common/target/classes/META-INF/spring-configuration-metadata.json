@@ -1,0 +1,411 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs",
+      "type": "com.phy.bcs.common.config.BcsProperties"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.async",
+      "type": "com.phy.bcs.common.config.BcsProperties$Async"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.cache",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache",
+      "name": "bcs.cache.ehcache",
+      "sourceMethod": "getEhcache()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache$Ehcache"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache",
+      "name": "bcs.cache.hazelcast",
+      "sourceMethod": "getHazelcast()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache$Hazelcast"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache",
+      "name": "bcs.cache.infinispan",
+      "sourceMethod": "getInfinispan()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan",
+      "name": "bcs.cache.infinispan.distributed",
+      "sourceMethod": "getDistributed()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Distributed"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan",
+      "name": "bcs.cache.infinispan.local",
+      "sourceMethod": "getLocal()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Local"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan",
+      "name": "bcs.cache.infinispan.replicated",
+      "sourceMethod": "getReplicated()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Replicated"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.gateway",
+      "type": "com.phy.bcs.common.config.BcsProperties$Gateway"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Gateway",
+      "name": "bcs.gateway.rate-limiting",
+      "sourceMethod": "getRateLimiting()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Gateway$RateLimiting"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.http",
+      "type": "com.phy.bcs.common.config.BcsProperties$Http"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Http",
+      "name": "bcs.http.cache",
+      "sourceMethod": "getCache()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Http$Cache"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.logging",
+      "type": "com.phy.bcs.common.config.BcsProperties$Logging"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Logging",
+      "name": "bcs.logging.logstash",
+      "sourceMethod": "getLogstash()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Logging$Logstash"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.mail",
+      "type": "com.phy.bcs.common.config.BcsProperties$Mail"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.security",
+      "type": "com.phy.bcs.common.config.BcsProperties$Security"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security",
+      "name": "bcs.security.authentication",
+      "sourceMethod": "getAuthentication()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Security$Authentication"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication",
+      "name": "bcs.security.authentication.jwt",
+      "sourceMethod": "getJwt()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Jwt"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication",
+      "name": "bcs.security.authentication.oauth",
+      "sourceMethod": "getOauth()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Oauth"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security",
+      "name": "bcs.security.client-authorization",
+      "sourceMethod": "getClientAuthorization()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Security$ClientAuthorization"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security",
+      "name": "bcs.security.remember-me",
+      "sourceMethod": "getRememberMe()",
+      "type": "com.phy.bcs.common.config.BcsProperties$Security$RememberMe"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.persistence.util.SqlUtils",
+      "name": "jdbc",
+      "type": "com.phy.bcs.common.persistence.util.SqlUtils"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "defaultValue": "boss",
+      "name": "bcs.application",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Async",
+      "defaultValue": 2,
+      "name": "bcs.async.core-pool-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Async",
+      "defaultValue": 50,
+      "name": "bcs.async.max-pool-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Async",
+      "defaultValue": 10000,
+      "name": "bcs.async.queue-capacity",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.business-time-zone",
+      "type": "java.util.TimeZone"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Ehcache",
+      "defaultValue": 100,
+      "name": "bcs.cache.ehcache.max-entries",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Ehcache",
+      "defaultValue": 3600,
+      "name": "bcs.cache.ehcache.time-to-live-seconds",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Hazelcast",
+      "defaultValue": 1,
+      "name": "bcs.cache.hazelcast.backup-count",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Hazelcast",
+      "defaultValue": 3600,
+      "name": "bcs.cache.hazelcast.time-to-live-seconds",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan",
+      "defaultValue": "default-configs\/default-jgroups-tcp.xml",
+      "name": "bcs.cache.infinispan.config-file",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Distributed",
+      "defaultValue": 1,
+      "name": "bcs.cache.infinispan.distributed.instance-count",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Distributed",
+      "defaultValue": 100,
+      "name": "bcs.cache.infinispan.distributed.max-entries",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Distributed",
+      "defaultValue": 60,
+      "name": "bcs.cache.infinispan.distributed.time-to-live-seconds",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Local",
+      "defaultValue": 100,
+      "name": "bcs.cache.infinispan.local.max-entries",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Local",
+      "defaultValue": 60,
+      "name": "bcs.cache.infinispan.local.time-to-live-seconds",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Replicated",
+      "defaultValue": 100,
+      "name": "bcs.cache.infinispan.replicated.max-entries",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan$Replicated",
+      "defaultValue": 60,
+      "name": "bcs.cache.infinispan.replicated.time-to-live-seconds",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Cache$Infinispan",
+      "defaultValue": false,
+      "name": "bcs.cache.infinispan.stats-enabled",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "defaultValue": true,
+      "name": "bcs.develop-mode",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "defaultValue": "",
+      "name": "bcs.free-u-r-l",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Gateway",
+      "name": "bcs.gateway.authorized-microservices-endpoints",
+      "type": "java.util.Map<java.lang.String,java.util.List<java.lang.String>>"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Gateway$RateLimiting",
+      "defaultValue": 3600,
+      "name": "bcs.gateway.rate-limiting.duration-in-seconds",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Gateway$RateLimiting",
+      "defaultValue": false,
+      "name": "bcs.gateway.rate-limiting.enabled",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Gateway$RateLimiting",
+      "defaultValue": 100000,
+      "name": "bcs.gateway.rate-limiting.limit",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Http$Cache",
+      "defaultValue": 1461,
+      "name": "bcs.http.cache.time-to-live-in-days",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Http",
+      "name": "bcs.http.version",
+      "type": "com.phy.bcs.common.config.BcsProperties$Http$Version"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.language-support",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Logging$Logstash",
+      "defaultValue": true,
+      "name": "bcs.logging.logstash.enabled",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Logging$Logstash",
+      "defaultValue": "localhost",
+      "name": "bcs.logging.logstash.host",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Logging$Logstash",
+      "defaultValue": 5000,
+      "name": "bcs.logging.logstash.port",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Logging$Logstash",
+      "defaultValue": 512,
+      "name": "bcs.logging.logstash.queue-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Mail",
+      "defaultValue": "",
+      "name": "bcs.mail.base-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Mail",
+      "defaultValue": "",
+      "name": "bcs.mail.from",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Jwt",
+      "name": "bcs.security.authentication.jwt.secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Jwt",
+      "defaultValue": 1800,
+      "name": "bcs.security.authentication.jwt.token-validity-in-seconds",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Jwt",
+      "defaultValue": 2592000,
+      "name": "bcs.security.authentication.jwt.token-validity-in-seconds-for-remember-me",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Oauth",
+      "name": "bcs.security.authentication.oauth.client-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Oauth",
+      "name": "bcs.security.authentication.oauth.client-secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$Authentication$Oauth",
+      "defaultValue": 1800,
+      "name": "bcs.security.authentication.oauth.token-validity-in-seconds",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$ClientAuthorization",
+      "name": "bcs.security.client-authorization.access-token-uri",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$ClientAuthorization",
+      "name": "bcs.security.client-authorization.client-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$ClientAuthorization",
+      "name": "bcs.security.client-authorization.client-secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$ClientAuthorization",
+      "name": "bcs.security.client-authorization.token-service-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties$Security$RememberMe",
+      "name": "bcs.security.remember-me.key",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "name": "bcs.system-locale",
+      "type": "java.util.Locale"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "defaultValue": true,
+      "name": "bcs.test-mode",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "defaultValue": true,
+      "name": "bcs.token-interceptor",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.phy.bcs.common.config.BcsProperties",
+      "defaultValue": ".html",
+      "name": "bcs.url-suffix",
+      "type": "java.lang.String"
+    }
+  ]
+}
