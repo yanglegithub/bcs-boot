@@ -3,19 +3,12 @@ package com.phy.bcs.service.ifs.netty.server.handler;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.file.service.InfFileStatusService;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import io.netty.channel.ChannelHandlerContext;
-import oracle.jdbc.rowset.OracleSerialBlob;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
@@ -28,12 +21,12 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
     private int filelength = 0;
 
     private InfFileStatusService service;
-    private MyAppllicationConfig config;
+    private BcsApplicationConfig config;
 
     public FepServerHander(){
         super();
         service = SpringContextHolder.getBean(InfFileStatusService.class);
-        config = SpringContextHolder.getBean(MyAppllicationConfig.class);
+        config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
 

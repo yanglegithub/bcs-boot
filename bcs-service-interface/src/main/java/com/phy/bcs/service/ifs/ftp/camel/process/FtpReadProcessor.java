@@ -1,6 +1,6 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.file.GenericFile;
@@ -21,7 +21,7 @@ public class FtpReadProcessor implements Processor {
     private static final Logger logger = LoggerFactory.getLogger(FtpReadProcessor.class);
 
     @Autowired
-    private MyAppllicationConfig config;
+    private BcsApplicationConfig config;
 
     /**
      * 文件读取到本地后的处理逻辑

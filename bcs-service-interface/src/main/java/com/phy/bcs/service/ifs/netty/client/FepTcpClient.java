@@ -1,7 +1,7 @@
 package com.phy.bcs.service.ifs.netty.client;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.netty.client.handler.FepTcpClientHander;
 import com.phy.bcs.service.ifs.netty.codec.fep.ByteToFepMessageDecoder;
 import com.phy.bcs.service.ifs.netty.codec.fep.FepMessageToByteEncoder;
@@ -21,7 +21,7 @@ public class FepTcpClient {
 
     public void connect(String host, int port, String[] filepaths) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-        MyAppllicationConfig config = SpringContextHolder.getBean(MyAppllicationConfig.class);
+        BcsApplicationConfig config = SpringContextHolder.getBean(BcsApplicationConfig.class);
         int timeout = config.getTimeout();
 
         try {

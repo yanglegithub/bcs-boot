@@ -17,7 +17,7 @@ public class NetStatus {
 
     public static void init(){
         if(HZJnetstatus==null||TFCnetstatus==null||FFOCnetstatus==null||ZJnetstatus==null){
-            MyAppllicationConfig config  = SpringContextHolder.getBean(MyAppllicationConfig.class);
+            BcsApplicationConfig config  = SpringContextHolder.getBean(BcsApplicationConfig.class);
             int timeConfig = config.getNetstatustimes();
             int bytes = 0;
             if(timeConfig > 0)

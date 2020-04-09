@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Data
 @ConfigurationProperties(prefix = "my-application")
 @Component
-public class MyAppllicationConfig {
+public class BcsApplicationConfig {
     private MidIp midip;
     private IP ip;
     private PORT port;

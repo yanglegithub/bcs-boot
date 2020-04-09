@@ -1,20 +1,23 @@
 package com.phy.bcs.service.ifs.netty.client;
 
+import com.phy.bcs.common.util.spring.SpringContextHolder;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-
-import java.net.InetSocketAddress;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class RecpClient {
     private String host;
     private int port;
+    BcsApplicationConfig config;
 
     public RecpClient(String host, int port){
         this.host = host;
         this.port = port;
+        config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
     public void connect(SimpleChannelInboundHandler<DatagramPacket> handler) throws InterruptedException {
@@ -29,7 +32,7 @@ public class RecpClient {
             b.handler(new ChannelInitializer<Channel>() {
                 @Override
                 public void initChannel(Channel ch) throws Exception {
-                    ch.pipeline()
+                    ch.pipeline().addLast(new IdleStateHandler(config.getTimeout(), 0, 0))
                             .addLast(handler);
                 }
             });

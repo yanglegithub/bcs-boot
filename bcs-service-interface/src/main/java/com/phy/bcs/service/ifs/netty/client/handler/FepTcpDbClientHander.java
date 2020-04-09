@@ -3,7 +3,7 @@ package com.phy.bcs.service.ifs.netty.client.handler;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.file.service.InfFileStatusService;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import com.phy.bcs.service.ifs.netty.server.handler.FepOverTimeHandler;
@@ -11,7 +11,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
     }
 
     private void send(ChannelHandlerContext ctx, Integer id, int num) throws IOException, SQLException {
-        int packgesize = SpringContextHolder.getBean(MyAppllicationConfig.class).getPackgesize();
+        int packgesize = SpringContextHolder.getBean(BcsApplicationConfig.class).getPackgesize();
         int off = num;
         InfFileStatus filesta = filelist.get(fileIndex);
         int inlength = filesta.getFileContent().length;

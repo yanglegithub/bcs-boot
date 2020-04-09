@@ -1,13 +1,9 @@
 package com.phy.bcs.service.ifs.netty.server.handler;
 
-import com.phy.bcs.common.util.spring.SpringContextHolder;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
 import com.phy.bcs.service.ifs.netty.codec.udf.UdfMessage;
 import com.phy.bcs.service.ifs.netty.utils.NumberUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
-import java.math.BigInteger;
 
 public class UdfServerInHandler extends ChannelInboundHandlerAdapter {
     private int count = 0;

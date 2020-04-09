@@ -1,22 +1,16 @@
 package com.phy.bcs.service.ifs.netty.server.handler;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
-import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.file.service.InfFileStatusService;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
-import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;
-import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
@@ -24,7 +18,7 @@ public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
 
     private InetSocketAddress remoteAdress;
     private InfFileStatusService service;
-    private MyAppllicationConfig config;
+    private BcsApplicationConfig config;
     private Class<? extends RecpServerContext> type;
     //需要接收的文件
     private Map<String, RecpServerContext> ipcontext;
@@ -32,7 +26,7 @@ public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
     public RecpServerHander(Class<? extends RecpServerContext> type){
         this.type = type;
         service = SpringContextHolder.getBean(InfFileStatusService.class);
-        config = SpringContextHolder.getBean(MyAppllicationConfig.class);
+        config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
     public RecpServerContext createContext(){

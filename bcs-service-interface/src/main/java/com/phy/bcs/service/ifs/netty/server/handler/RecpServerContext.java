@@ -3,7 +3,7 @@ package com.phy.bcs.service.ifs.netty.server.handler;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.file.service.InfFileStatusService;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
@@ -15,17 +15,14 @@ import lombok.Data;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 public abstract class RecpServerContext {
 
     private InetSocketAddress remoteAdress;
     private InfFileStatusService service;
-    private MyAppllicationConfig config;
+    private BcsApplicationConfig config;
     //当前正在发送的文件下标，即第几个文件，fileIndex从0开始
     private InfFileStatus file;
     //当前的客户端的ip
@@ -44,7 +41,7 @@ public abstract class RecpServerContext {
     public RecpServerContext(InetSocketAddress remoteAdress){
         this.remoteAdress = remoteAdress;
         service = SpringContextHolder.getBean(InfFileStatusService.class);
-        config = SpringContextHolder.getBean(MyAppllicationConfig.class);
+        config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
     protected void handleData(ChannelHandlerContext channelHandlerContext, DatagramPacket packet) {

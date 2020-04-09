@@ -1,11 +1,9 @@
 package com.phy.bcs.service.ifs.netty.server;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.netty.codec.fep.ByteToFepMessageDecoder;
 import com.phy.bcs.service.ifs.netty.codec.fep.FepMessageToByteEncoder;
-import com.phy.bcs.service.ifs.netty.codec.udf.ByteToUdfMessageDecoder;
-import com.phy.bcs.service.ifs.netty.codec.udf.UdfMessageToByteEncoder;
 import com.phy.bcs.service.ifs.netty.server.handler.FepOverTimeHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -24,7 +22,7 @@ public class FepTcpServer {
     }
 
     public void start(FepOverTimeHandler hander) throws InterruptedException {
-        MyAppllicationConfig config = SpringContextHolder.getBean(MyAppllicationConfig.class);
+        BcsApplicationConfig config = SpringContextHolder.getBean(BcsApplicationConfig.class);
         int timeout = config.getTimeout();
 
         // 3. 创建 EventLoopGroup

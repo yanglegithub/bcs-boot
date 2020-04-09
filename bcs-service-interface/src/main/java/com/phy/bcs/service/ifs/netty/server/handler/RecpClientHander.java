@@ -3,11 +3,10 @@ package com.phy.bcs.service.ifs.netty.server.handler;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.file.service.InfFileStatusService;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -18,7 +17,7 @@ public class RecpClientHander extends FepOverTimeHandler<ParseRECP>{
 
     private InetSocketAddress remoteAdress;
     private InfFileStatusService service;
-    private MyAppllicationConfig config;
+    private BcsApplicationConfig config;
     //需要发送的文件
     private List<InfFileStatus> files;
     //当前正在发送的文件下标，即第几个文件，fileIndex从0开始
@@ -36,7 +35,7 @@ public class RecpClientHander extends FepOverTimeHandler<ParseRECP>{
         this.files = files;
         this.remoteAdress = remoteAdress;
         service = SpringContextHolder.getBean(InfFileStatusService.class);
-        config = SpringContextHolder.getBean(MyAppllicationConfig.class);
+        config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
     @Override

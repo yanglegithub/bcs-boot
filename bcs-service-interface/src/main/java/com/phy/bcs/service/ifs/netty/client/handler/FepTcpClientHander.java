@@ -1,7 +1,7 @@
 package com.phy.bcs.service.ifs.netty.client.handler;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
-import com.phy.bcs.service.ifs.config.MyAppllicationConfig;
+import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.netty.server.handler.FepOverTimeHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -91,7 +91,7 @@ public class FepTcpClientHander extends FepOverTimeHandler<ParseFEP> {
     }
 
     private void send(ChannelHandlerContext ctx, Integer id, int num) throws IOException {
-        int packgesize = SpringContextHolder.getBean(MyAppllicationConfig.class).getPackgesize();
+        int packgesize = SpringContextHolder.getBean(BcsApplicationConfig.class).getPackgesize();
         int off = num;
         String path = curPath;
         File file = new File(path);
