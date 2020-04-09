@@ -141,7 +141,7 @@ public abstract class RecpServerContext {
         newFile.setRecFinish(0);
         newFile.setSendFinish(0);
         newFile.setTransTimes(0);
-        newFile.setCreateTime(LocalDateTime.now());
+        newFile.setCreateTime(new Date());
         service.save(newFile);
         return newFile;
 

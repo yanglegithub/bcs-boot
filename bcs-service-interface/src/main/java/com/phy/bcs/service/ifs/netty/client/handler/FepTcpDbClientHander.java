@@ -12,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
@@ -59,7 +60,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             //操作数据库以保存此文件传输完毕的状态
             InfFileStatus filesta = filelist.get(fileIndex);
             filesta.setSendFinish(1);
-            filesta.setUpdateTime(LocalDateTime.now());
+            filesta.setUpdateTime(new Date());
             service.saveOrUpdate(filesta);
 
             //传输下一个文件
