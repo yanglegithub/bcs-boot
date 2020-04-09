@@ -35,32 +35,32 @@ my-application:
       - 17
       - 18
       - 19
-    #根据该参数判断当前的网络状态
-    netstatustimes: 5
-    #重连次数
-    reconnectTimes: 10
-    #超时时间（秒）
-    timeout: 15
-    #包大小（字节数）
-    packgesize: 4096
-    #IP与端口号配置
-    IP:
-      #五型
-      TFCIP: 127.0.0.1
-      #54
-      FFOCIP: 127.0.0.1
-      #航侦局
-      HZJIP: 127.0.0.1
-      #中继中心
-      ZJIP: 127.0.0.1
-      #26长管
-      TFMIP: 127.0.0.1
-      #26站网
-      TFSIP: 127.0.0.1
-    PORT:
-      TFCudf: 1201
-      FFOCudf: 1202
-      localHzjUdf: 12301
+  #根据该参数判断当前的网络状态
+  netstatustimes: 5
+  #重连次数
+  reconnectTimes: 10
+  #超时时间（秒）
+  timeout: 15
+  #包大小（字节数）
+  packgesize: 4096
+  #IP与端口号配置
+  IP:
+    #五型
+    TFCIP: 127.0.0.1
+    #54
+    FFOCIP: 127.0.0.1
+    #航侦局
+    HZJIP: 127.0.0.1
+    #中继中心
+    ZJIP: 127.0.0.1
+    #26长管
+    TFMIP: 127.0.0.1
+    #26站网
+    TFSIP: 127.0.0.1
+  PORT:
+    TFCudf: 1201
+    FFOCudf: 1202
+    localHzjUdf: 12301
 
 
 
