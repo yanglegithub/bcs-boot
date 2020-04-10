@@ -30,8 +30,8 @@ public class InfFileStatusService extends DataService<InfFileStatusMapper, InfFi
      */
     public InfFileStatus findInByFilename(String filename){
         QueryWrapper<InfFileStatus> query = new QueryWrapper<InfFileStatus>()
-                .eq("recFinish", 0)
-                .eq("fileName", filename.trim());
+                .eq("REC_FINIDH", 0)
+                .eq("FILE_NAME", filename.trim());
         InfFileStatus fileStatus = null;
         try{
             fileStatus = baseMapper.selectOne(query);
@@ -47,7 +47,7 @@ public class InfFileStatusService extends DataService<InfFileStatusMapper, InfFi
      */
     public InfFileStatus findOneByFilename(String filename){
         QueryWrapper<InfFileStatus> query = new QueryWrapper<InfFileStatus>()
-                .eq("fileName", filename.trim());
+                .eq("FILE_NAME", filename.trim());
         InfFileStatus fileStatus = null;
         try{
             fileStatus = baseMapper.selectOne(query);
