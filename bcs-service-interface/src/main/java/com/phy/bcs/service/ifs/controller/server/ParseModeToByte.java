@@ -56,7 +56,7 @@ public class ParseModeToByte {
     public static byte[] parseRecpTo(ParseRECP data){
         byte[] bytes = null;
         if(data.getFlag().equals(PackageType.SYN)){
-            bytes = new byte[]{0x01};
+            bytes = new byte[]{0x00};
         }else if(data.getFlag().equals(PackageType.ACK)){
             bytes = new byte[]{0x02};
         }else if(data.getFlag().equals(PackageType.DATA)){
