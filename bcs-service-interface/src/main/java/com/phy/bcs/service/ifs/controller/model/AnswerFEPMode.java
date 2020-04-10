@@ -22,7 +22,7 @@ public class AnswerFEPMode {
         fileName = new String(fileNameBytes, "UTF-8");
         byte[] numBytes = ParseUtil.strChange(bytes, 64, 68);
         num = ParseUtil.bytesToInt2(numBytes, 0);
-        byte[] idBytes = ParseUtil.strChange(bytes, 68, 69);
+        byte[] idBytes = ParseUtil.strChange(bytes, 68, 70);
         ID = ParseUtil.bytes2ToInt(idBytes, 0);
     }
     public AnswerFEPMode(){
