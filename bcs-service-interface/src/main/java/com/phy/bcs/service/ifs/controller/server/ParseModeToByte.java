@@ -26,13 +26,13 @@ public class ParseModeToByte {
     }
     public static byte[] parseFEPSendTo(SendFEPMode data){
         byte[] bytes = new byte[0];
-        bytes = ParseUtil.byteMerger(bytes,data.getFileName().getBytes());
+        bytes = ParseUtil.byteMerger(bytes,ParseUtil.strToBytes(data.getFileName(), 64));
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.intToBytes2(data.getFileLength()));
         return bytes;
     }
     public static byte[] parseFEPAnswerTo(AnswerFEPMode data){
         byte[] bytes = new byte[0];
-        bytes = ParseUtil.byteMerger(bytes,data.getFileName().getBytes());
+        bytes = ParseUtil.byteMerger(bytes,ParseUtil.strToBytes(data.getFileName(), 64));
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.intToBytes2(data.getNum()));
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.int2ToBytes(data.getID()));
         return bytes;
