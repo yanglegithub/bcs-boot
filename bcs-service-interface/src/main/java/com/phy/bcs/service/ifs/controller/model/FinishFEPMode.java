@@ -12,7 +12,7 @@ public class FinishFEPMode {
     //2 byte
     private int ID;
     public FinishFEPMode(byte[] bytes) {
-        byte[] idBytes = ParseUtil.strChange(bytes, 0, 4);
+        byte[] idBytes = ParseUtil.strChange(bytes, 0, 2);
         ID = ParseUtil.bytes2ToInt(idBytes, 0);
     }
     public FinishFEPMode(){
