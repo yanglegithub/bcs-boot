@@ -20,6 +20,7 @@ public class ParseFEP {
 
     public ParseFEP(byte[] bytes) throws UnsupportedEncodingException {
         String flag = new String(ParseUtil.strChange(bytes, 0, 1),"UTF-8");
+        this.flag = flag;
         //协议包内容
         byte[] packageData  = ParseUtil.strChange(bytes,1,bytes.length);
         switch (Integer.parseInt(flag)) {
