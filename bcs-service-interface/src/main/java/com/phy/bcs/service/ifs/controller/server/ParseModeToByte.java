@@ -79,6 +79,8 @@ public class ParseModeToByte {
 
     public static byte[] getIpbyteFromStr(String ipadress){
         String[] ips = ipadress.split("\\.");
+        if(!ipadress.contains("."))
+            ips = ipadress.split(":");
         byte[] ip = new byte[4];
         if(ips.length > 4){
             int h = Integer.parseInt(ips[4], 16);

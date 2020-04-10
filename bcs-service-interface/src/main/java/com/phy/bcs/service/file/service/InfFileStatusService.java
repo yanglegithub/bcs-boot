@@ -59,4 +59,12 @@ public class InfFileStatusService extends DataService<InfFileStatusMapper, InfFi
     public List<InfFileStatus> findAllObject(){
         return baseMapper.findAllObject();
     }
+
+    public List<InfFileStatus> findAllSendFiles(){
+        QueryWrapper<InfFileStatus> query = new QueryWrapper<InfFileStatus>()
+                .eq("REC_FINISH", 1)
+                .eq("SEND_FINISH", 0)
+                .eq("TO_PROTO", "RECP");
+        return baseMapper.selectList(query);
+    }
 }
