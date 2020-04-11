@@ -1,10 +1,13 @@
 package com.phy.bcs.service.ifs.test;
 
-
-import io.netty.buffer.ByteBuf;
-
+import java.io.Console;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class TestThread {
     public static int s_count = 10000;
@@ -43,44 +46,17 @@ public class TestThread {
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        /*byte a = (byte) 0x80;
-        byte b = 0x0F;
-        System.out.println("b="+b+",a="+a);
-        System.out.printf("%010x,%010x\n", b, a);
-        System.out.printf("%010x,%010x\n", (int)b, (int)a);
+        getUserIn("maintest");
+    }
 
-        byte[] aa = {0x10, 0x08, 0x00, 0x00};
-        byte[] bb = {0x01, 0x01, 0x00, 0x00};
-        int iaa = new BigInteger(aa).intValue();
-        int ibb = new BigInteger(bb).intValue();
-
-        System.out.println("aa="+iaa);
-        System.out.println("bb="+ibb);
-        System.out.printf("%010x,%010x\n", iaa, ibb);*/
-        /*int a = 0x00111111;
-        int b = 0x00001111;
-        int c = 0x00000111;
-        int d = 0xffffff80;
-        System.out.println(new BigInteger(new Integer(a)).toByteArray());*/
-        /*String str = "1234567890abcdefghijklmnopqrstuvwxyz";
-        byte[] strbyte = str.getBytes();
-        System.out.println(strbyte);
-
-        byte[] mybytes = new byte[]{0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        String mystr = new String(mybytes, "UTF8");
-        System.out.println("is equal:"+"2111".contains(mystr));
-        byte[] mybytes_  = mystr.getBytes();
-        System.out.println(mystr);*/
-        byte[] bytes = new byte[0];
-        System.out.println(bytes);
-        System.out.println(bytes.length);
-        int step = 0;
-        if(step == 0){
-            System.out.println(step);
-            step = 1;
-        }else if(step == 1){
-            System.out.println(step);
-            step = 2;
+    public static boolean getUserIn(String tip){
+        Scanner reader = new Scanner(System.in);
+        System.out.print(tip+":");
+        if(reader.hasNext()){
+            int i = reader.nextInt();
+            reader.close();
+            return i>0;
         }
+        return false;
     }
 }

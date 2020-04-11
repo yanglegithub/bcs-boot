@@ -37,18 +37,26 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             AnswerFEPMode mode = msg.getAnswerFEPMode();
             InfFileStatus filesta = filelist.get(fileIndex);
 
-            if(!filesta.getFileName().contains(mode.getFileName()))
+            if(!filesta.getFileName().contains(mode.getFileName().trim()))
                 return;
 
-            //当前需要传输的文件id
-            id = mode.getID();
-            step = 2;
-            try {
-                send(channelHandlerContext, id, mode.getNum());
-                step = 3;
-            } catch (Exception e) {
-                System.out.println("文件读取失败");
-                e.printStackTrace();
+            if(mode.getNum() < 0){
+                closefep(channelHandlerContext);
+                if(mode.getNum() == -1) {
+                    filesta.setSendFinish(1);
+                    service.saveOrUpdate(filesta);
+                }
+            }else {
+                //当前需要传输的文件id
+                id = mode.getID();
+                step = 2;
+                try {
+                    send(channelHandlerContext, id, mode.getNum());
+                    step = 3;
+                } catch (Exception e) {
+                    System.out.println("文件读取失败");
+                    e.printStackTrace();
+                }
             }
         } else if(step == 3){
             if(!"3".equals(msg.getFlag()))
@@ -97,15 +105,12 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             byte[] bytes;
             if(inlength-off > packgesize){
                 bytes = ParseUtil.getBytes(filesta.getFileContent(), off, packgesize);
-                off += packgesize;
             }
             else if(inlength-off == packgesize){
                 sendZero = true;
                 bytes = ParseUtil.getBytes(filesta.getFileContent(), off, inlength-off);
-                off += inlength-off;
             }else{
                 bytes = ParseUtil.getBytes(filesta.getFileContent(), off, inlength-off);
-                off += inlength-off;
             }
 
             DataFEPMode data = new DataFEPMode();
@@ -116,6 +121,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             ParseFEP fep = new ParseFEP();
             fep.setFlag("4");
             fep.setDataFEPMode(data);
+            off += bytes.length;
             ctx.writeAndFlush(fep);
 
             //当传输的文件大小为定长字节的整数倍时，传输完毕后要补发一个data长度为0字节的数据包
@@ -137,8 +143,9 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
         step = 0;
         id = 0;
         fileIndex++;
-        if(fileIndex >= filelist.size())
+        if(fileIndex >= filelist.size()){
             ctx.close();
+        }
     }
 
     private void requestNewFile(ChannelHandlerContext ctx) {

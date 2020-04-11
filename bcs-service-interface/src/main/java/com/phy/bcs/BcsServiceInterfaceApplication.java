@@ -2,6 +2,8 @@ package com.phy.bcs;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
+import com.phy.bcs.service.ifs.netty.client.FepTcpClient;
+import com.phy.bcs.service.ifs.netty.client.RecpClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,12 +17,19 @@ public class BcsServiceInterfaceApplication {
             @Override
             public void run() {
                 try {
-                    new UdfUdpServer(config.getPort().getLocalHzjUdf()).start(new HZJUdfServerHander());
+                    new RecpClient("192.168.1.104", 12345).run();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).start();*/
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FepTcpClient client = new FepTcpClient();
+                client.run();
+            }
+        }).start();
     }
 
 }
