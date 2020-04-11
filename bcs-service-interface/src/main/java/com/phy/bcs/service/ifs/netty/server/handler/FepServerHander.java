@@ -71,7 +71,8 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
         byte[] filebs = mode.getData().getBytes();
         //filebytes = ParseUtil.byteMerger(filebytes, filebs);
         try {
-            ParseUtil.setBytes(filestatus.getFileContent(), filelength, filebs);
+            byte[] newbs = ParseUtil.byteMerger(filestatus.getFileContent(), filebs);
+            filestatus.setFileContent(newbs);
         } catch (Exception e) {
             e.printStackTrace();
             service.saveOrUpdate(filestatus);
@@ -101,13 +102,15 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
     private AnswerFEPMode generAnswer(ChannelHandlerContext ctx, SendFEPMode sendMode) {
         //查找数据库，看看是否是有中断续传的文件
         filestatus = service.findOneByFilename(sendMode.getFileName());
+        if(filestatus!=null&&filestatus.getFileContent() == null)
+            filestatus.setFileContent(new byte[0]);
         AnswerFEPMode mode = new AnswerFEPMode();
         if(filestatus == null){
             //创建一条filestatus数据
             InfFileStatus newFile = new InfFileStatus();
             newFile.setFileName(sendMode.getFileName().trim());
             newFile.setLength(sendMode.getFileLength());
-            newFile.setFileContent(new byte[sendMode.getFileLength()]);
+            newFile.setFileContent(new byte[0]);
             //从哪个系统接收的
             String ip = ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress();
             newFile.setFromSystem(config.getSyscodeByIp(ip));
@@ -128,7 +131,7 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
             mode.setNum(0);
 
             //修改状态
-            step = 1;
+            step = 2;
             id = filestatus.getId();
         }else {
             long length = 0;
@@ -137,12 +140,13 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
                 length = filestatus.getFileContent().length;
                 num = (int)length;
             }catch(Exception e){
-            num = -2;
+                num = -2;
             }
             if(filestatus.getRecFinish() == 1){
                 mode.setID(filestatus.getId());
                 mode.setFileName(sendMode.getFileName());
                 mode.setNum(-1);
+                closefep();
             }else {
                 mode.setID(filestatus.getId());
                 mode.setFileName(sendMode.getFileName());
@@ -152,7 +156,7 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
                     closefep();
                 }else {
                     //修改状态
-                    step = 1;
+                    step = 2;
                     id = filestatus.getId();
                     filelength = (int) length;
                 }

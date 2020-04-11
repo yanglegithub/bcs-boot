@@ -14,7 +14,9 @@ import io.netty.channel.socket.DatagramPacket;
 import lombok.Data;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 @Data
@@ -30,12 +32,13 @@ public abstract class RecpServerContext {
     //0:建立RECP连接， 1:接收FEP请求包 2:发送FEP请求应答包， 3:接收第一个FEP数据包，6:接收后续FEP数据包 4:发送结束确认包， 5:断开RECP连接（接收RECP结束包）
     private int step = 0;
     //当前RECP交换的数据包序号
-    private int seqNum = 1;
+    private int seqNum = 0;
     //上一次与传送这个文件的时间
     private long timestramp = new Date().getTime();
 
     public RecpServerContext(){
-
+        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
     public RecpServerContext(InetSocketAddress remoteAdress){
@@ -44,6 +47,7 @@ public abstract class RecpServerContext {
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
+    //客户端数据处理
     protected void handleData(ChannelHandlerContext channelHandlerContext, DatagramPacket packet) {
         remoteAdress = packet.sender();
         ParseRECP msg = null;
@@ -51,12 +55,22 @@ public abstract class RecpServerContext {
             msg = new ParseRECP(ByteBufUtil.getBytes(packet.content()));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return;
         }
 
-        if(step == 1){
-            if(msg.getFlag() != PackageType.DATA && msg.getSerialNumber() != seqNum)
+        if(handleIdlePackage(channelHandlerContext, msg))
+            return;
+
+        if(step == 0){
+            if(msg.getFlag() != PackageType.SYN)
                 return;
-            if(!"1".equals(msg.getData().getFinishFEPMode()))
+            sendRecpACK(channelHandlerContext);
+            step = 1;
+            seqNum++;
+        }else if(step == 1){
+            if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
+                return;
+            if(!"1".equals(msg.getData().getFlag()))
                 return;
             file = generFileStatus(channelHandlerContext, msg.getData());
             sendRecpACK(channelHandlerContext);
@@ -64,7 +78,7 @@ public abstract class RecpServerContext {
             step = 2;
             sendFepACK(channelHandlerContext);
         } else if(step == 2){
-            if(msg.getFlag() != PackageType.ACK && msg.getSerialNumber() != seqNum)
+            if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
             if(file.getRecFinish() == 1)
                 step = 1;
@@ -72,7 +86,7 @@ public abstract class RecpServerContext {
                 step = 3;
             seqNum++;
         } else if(step == 3 || step == 6){
-            if(msg.getFlag() != PackageType.DATA && msg.getSerialNumber() != seqNum)
+            if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
             reciveData(msg.getData());
             sendRecpACK(channelHandlerContext);
@@ -83,20 +97,45 @@ public abstract class RecpServerContext {
                 step = 4;
             }
         } else if(step == 4){
-            if(msg.getFlag() != PackageType.ACK && msg.getSerialNumber() != seqNum)
+            if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
             seqNum++;
             step = 1;
         }
     }
 
+    //处理因为网络问题导致客户端的超时重发的包
+    public boolean handleIdlePackage(ChannelHandlerContext ctx, ParseRECP msg){
+        if(msg.getFlag() == PackageType.SYN && step == 1){
+            seqNum--;
+            sendRecpACK(ctx);
+            seqNum++;
+            return true;
+        }else if(msg.getFlag() == PackageType.DATA && step == 2 && "1".equals(msg.getData().getFlag())){
+            seqNum--;
+            sendRecpACK(ctx);
+            seqNum++;
+            sendFepACK(ctx);
+            return true;
+        }else if(msg.getFlag() == PackageType.DATA && (step == 6 || step == 4) && msg.getSerialNumber() == seqNum - 1){
+            seqNum--;
+            sendRecpACK(ctx);
+            seqNum++;
+            return true;
+        }
 
+        return false;
+    }
+
+    //超时重发处理
     public void handleReaderIdle(ChannelHandlerContext ctx){
         int sec = config.getTimeout();
-        if(new Date().getTime() - timestramp < sec * 1000)
+        if(new Date().getTime() - timestramp < sec * 1000 || sec == 0)
             return;
         if(step == 1){
+            seqNum--;
             sendRecpACK(ctx);
+            seqNum++;
         }else if(step == 2){
             seqNum--;
             sendRecpACK(ctx);
@@ -120,8 +159,11 @@ public abstract class RecpServerContext {
     public InfFileStatus generFileStatus(ChannelHandlerContext ctx, ParseFEP fep){
         SendFEPMode sendMode = fep.getSendFEPMode();
         InfFileStatus olc = service.findOneByFilename(sendMode.getFileName().trim());
-        if (olc != null)
+        if (olc != null){
+            if(olc.getFileContent() == null)
+                olc.setFileContent(new byte[0]);
             return olc;
+        }
 
         //创建一条filestatus数据
         InfFileStatus newFile = new InfFileStatus();
@@ -129,7 +171,7 @@ public abstract class RecpServerContext {
         newFile.setLength(sendMode.getFileLength());
         newFile.setFileContent(new byte[0]);
         //从哪个系统接收的
-        String ip = remoteAdress.getHostName();
+        String ip = remoteAdress.getAddress().getHostAddress();
         newFile.setFromSystem(config.getSyscodeByIp(ip));
         newFile.setFromProto("RECP");
         //到哪个系统去
@@ -148,7 +190,7 @@ public abstract class RecpServerContext {
     public void reciveData(ParseFEP fep){
         int packgesize = config.getPackgesize();
         DataFEPMode data = fep.getDataFEPMode();
-        if(data.getID() != file.getId() || data.getNum() != file.getFileContent().length)
+        if(data.getID() != file.getId() || data.getNum() != (file.getFileContent().length))
             return;
         byte[] dbyte = data.getData().getBytes();
         file.setFileContent(ParseUtil.byteMerger(file.getFileContent(), dbyte));
@@ -166,25 +208,33 @@ public abstract class RecpServerContext {
         AnswerFEPMode mode = new AnswerFEPMode();
         mode.setID(file.getId());
         mode.setFileName(file.getFileName());
-        mode.setNum(file.getRecFinish()==0?file.getFileContent().length:-1);
+        mode.setNum(file.getRecFinish()==0?(file.getFileContent().length):-1);
         fep.setAnswerFEPMode(mode);
         //RECP装包
         ParseRECP recp = new ParseRECP();
         recp.setFlag(PackageType.DATA);
         recp.setSerialNumber(seqNum);
-        recp.setSourceAddress(((InetSocketAddress)ctx.channel().localAddress()).getHostName());
+        try {
+            recp.setSourceAddress(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         recp.setReservedBits("");
         recp.setAbstractLength(0);
         recp.setAbstractData("");
         recp.setData(fep);
 
-        ctx.writeAndFlush(recp);
+        ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(ParseModeToByte.parseRecpTo(recp)), remoteAdress));
     }
 
     public void sendRecpACK(ChannelHandlerContext ctx){
         ParseRECP recp = new ParseRECP();
         recp.setFlag(PackageType.ACK);
-        recp.setSourceAddress(((InetSocketAddress)ctx.channel().localAddress()).getHostName());
+        try {
+            recp.setSourceAddress(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         recp.setSerialNumber(seqNum);
         recp.setReservedBits("1234");
         recp.setAbstractLength(0);
@@ -202,13 +252,17 @@ public abstract class RecpServerContext {
 
         ParseRECP recp = new ParseRECP();
         recp.setFlag(PackageType.DATA);
-        recp.setSourceAddress(((InetSocketAddress)ctx.channel().localAddress()).getHostName());
+        try {
+            recp.setSourceAddress(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         recp.setSerialNumber(seqNum);
         recp.setReservedBits("");
         recp.setAbstractLength(0);
         recp.setAbstractData("");
         recp.setData(fep);
-        ctx.writeAndFlush(recp);
+        ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(ParseModeToByte.parseRecpTo(recp)), remoteAdress));
     }
 
     public abstract int sysTransfor(ChannelHandlerContext ctx, SendFEPMode fep);

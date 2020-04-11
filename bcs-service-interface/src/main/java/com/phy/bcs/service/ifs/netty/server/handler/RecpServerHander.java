@@ -4,13 +4,17 @@ import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.service.InfFileStatusService;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
+import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;
+import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
@@ -21,7 +25,7 @@ public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
     private BcsApplicationConfig config;
     private Class<? extends RecpServerContext> type;
     //需要接收的文件
-    private Map<String, RecpServerContext> ipcontext;
+    private Map<String, RecpServerContext> ipcontext = new HashMap<>();
 
     public RecpServerHander(Class<? extends RecpServerContext> type){
         this.type = type;
@@ -60,23 +64,47 @@ public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
                 newconnect.setIp(msg.getSourceAddress());
                 newconnect.setRemoteAdress(packet.sender());
                 ipcontext.put(msg.getSourceAddress(), newconnect);
-                newconnect.sendRecpACK(channelHandlerContext);
-                return;
-            } else {
-                return;
+                context = newconnect;
             }
         }else if(msg.getFlag() == PackageType.FIN){
-            service.saveOrUpdate(context.getFile());
-            ipcontext.remove(context.getIp());
+            if(context != null){
+                service.saveOrUpdate(context.getFile());
+                ipcontext.remove(context.getIp());
+                sendRecpACK(channelHandlerContext, msg.getSerialNumber());
+            }else{
+                sendRecpACK(channelHandlerContext, msg.getSerialNumber());
+            }
+            return;
         }
+        context.handleData(channelHandlerContext, packet);
+        remoteAdress = null;
     }
 
 
     @Override
     public void handleReaderIdle(ChannelHandlerContext ctx){
         for (Map.Entry<String, RecpServerContext> entry : ipcontext.entrySet()){
+            //若在处理时遍历到自己的ip，则跳过
+            if(remoteAdress != null){
+                int remote = ParseUtil.bytesToInt2(ParseModeToByte.getIpbyteFromStr(remoteAdress.getAddress().getHostAddress()), 0);
+                int thisip = ParseUtil.bytesToInt2(ParseModeToByte.getIpbyteFromStr(entry.getKey()),0);
+                if(remote == thisip)
+                    continue;
+            }
             RecpServerContext context = entry.getValue();
             context.handleReaderIdle(ctx);
         }
+    }
+
+    public void sendRecpACK(ChannelHandlerContext ctx, int seqNum){
+        ParseRECP recp = new ParseRECP();
+        recp.setFlag(PackageType.ACK);
+        recp.setSourceAddress(((InetSocketAddress)ctx.channel().localAddress()).getHostName());
+        recp.setSerialNumber(seqNum);
+        recp.setReservedBits("1234");
+        recp.setAbstractLength(0);
+        recp.setAbstractData("");
+        recp.setData(null);
+        ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(ParseModeToByte.parseRecpTo(recp)), remoteAdress));
     }
 }
