@@ -54,6 +54,7 @@ public class ByteToFepMessageDecoder extends ByteToMessageDecoder {
                 else
                     return;
                 break;
+                default:return;
         }
 
         byte[] bytes = ParseUtil.byteMerger(new byte[]{flag}, ByteBufUtil.getBytes(buf));
@@ -64,6 +65,8 @@ public class ByteToFepMessageDecoder extends ByteToMessageDecoder {
         }catch (Exception e){
             return;
         }
+        if("1".equals(fep.getFlag()))
+            length = fep.getSendFEPMode().getFileLength();
         out.add(fep);
     }
 }
