@@ -5,17 +5,36 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Data
-@ConfigurationProperties(prefix = "my-application")
+@ConfigurationProperties(prefix = "net-application")
 @Component
 public class BcsApplicationConfig {
-    private MidIp midip;
-    private IP ip;
-    private PORT port;
+    @Data
+    public static class IpPort{
+        private String ip;
+        private int udfPort;
+        private int pdxpPort;
+        private int fepPort;
 
+    }
+    private int[] wsmids;
+    private int[] wxmids;
     private int netstatustimes;
     private int reconnectTimes;
     private int timeout;
     private int packgesize;
+
+    private IpPort tfcSystem;
+    private IpPort ffocSystem;
+    private IpPort hzjSystem;
+    private IpPort tssSystem;
+    private IpPort tsmSystem;
+    private IpPort zjSystem;
+
+    private int localHzjUdfport;
+    private int localTsmFepport;
+    private int localTsmPdxpport;
+    private int localTssFepport;
+    private int localZjFepport;
 
     /**
      * 跟据ip找出对应的系统代码，若没有此ip，则返回-1
@@ -23,58 +42,54 @@ public class BcsApplicationConfig {
      * @return
      */
     public int getSyscodeByIp(String ipstr){
-        if(ipstr.equals(ip.TFCIP)){
+        if(ipstr.equals(tfcSystem.getIp())){
             return Constants.TFC_SYSTEM;
-        }else if(ipstr.equals(ip.FFOCIP)){
+        }else if(ipstr.equals(ffocSystem.getIp())){
             return Constants.FFO_SYSTEM;
-        }else if(ipstr.equals(ip.HZJIP)){
+        }else if(ipstr.equals(hzjSystem.getIp())){
             return Constants.HZJ_SYSTEM;
-        }else if(ipstr.equals(ip.ZJIP)){
+        }else if(ipstr.equals(zjSystem.getIp())){
             return Constants.ZJ_SYSTEM;
-        }else if(ipstr.equals(ip.TFMIP)){
-            return Constants.TFM_SYSTEM;
-        }else if(ipstr.equals(ip.TFSIP)){
-            return Constants.TFS_SYSTEM;
+        }else if(ipstr.equals(tsmSystem.getIp())){
+            return Constants.TSM_SYSTEM;
+        }else if(ipstr.equals(tssSystem.getIp())){
+            return Constants.TSS_SYSTEM;
         }
         return -1;
     }
 
-    @Data
-    public static class MidIp{
-        /**
-         * 五型对应任务号
-         */
-        private int[] wxsites;
-
-        /**
-         * 54对应任务号
-         */
-        private int[] wssites;
+    public String getIpBySystemcode(int code){
+        if(code == Constants.TFC_SYSTEM){
+            return tfcSystem.getIp();
+        }else if(code == Constants.FFO_SYSTEM){
+            return ffocSystem.getIp();
+        }else if(code == Constants.HZJ_SYSTEM){
+            return hzjSystem.getIp();
+        }else if(code == Constants.ZJ_SYSTEM){
+            return zjSystem.getIp();
+        }else if(code == Constants.TSM_SYSTEM){
+            return tsmSystem.getIp();
+        }else if(code == Constants.TSS_SYSTEM){
+            return tssSystem.getIp();
+        }
+        return "";
     }
-
-    @Data
-    public static class IP{
-        //五型
-        private String TFCIP;
-        //54
-        private String FFOCIP;
-        //航侦局
-        public String HZJIP;
-        //中继
-        public String ZJIP;
-        //26长管
-        public String TFMIP;
-        //26站网
-        public String TFSIP;
-    }
-
-    @Data
-    public static class PORT{
-        //五型udf协议端口
-        private int TFCudf;
-        //54udf协议端口
-        private int FFOCudf;
-        //本地航侦局模块udf协议端口
-        private int localHzjUdf;
+    /**
+     * 跟据mid找出该mid属于五型还是54系统
+     * @param mid
+     * @return
+     */
+    public int getSystemCodeByMid(int mid){
+        int[] mids = wsmids;
+        for (int i : mids){
+            if(i == mid)
+                return Constants.FFO_SYSTEM;
+        }
+        mids = wxmids;
+        for (int i : mids){
+            if(i == mid)
+                return Constants.TFC_SYSTEM;
+        }
+        return -1;
     }
 }

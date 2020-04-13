@@ -7,11 +7,13 @@ import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.Data;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
 
-public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
+@Data
+public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
     //记录FEP协议进行到哪一步，0:接收FEP请求包; 1:发送请求回应包; 2:接收数据包; 3:发送结束包
     private int step = 0;
     //当前接收的文件信息
@@ -23,7 +25,7 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
     private InfFileStatusService service;
     private BcsApplicationConfig config;
 
-    public FepServerHander(){
+    public FepServerHandler(){
         super();
         service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
@@ -91,6 +93,7 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
             //修改数据库
             filestatus.setRecFinish(1);
             service.saveOrUpdate(filestatus);
+            fileSend(filestatus);
 
             ctx.writeAndFlush(fep);
 
@@ -186,4 +189,10 @@ public abstract class FepServerHander extends FepOverTimeHandler<ParseFEP> {
      * @return
      */
     protected abstract String protoTransfor(ChannelHandlerContext ctx, SendFEPMode mode);
+
+    /**
+     * 文件转发，在文件接收完毕后调用
+     * @param file
+     */
+    protected abstract void fileSend(InfFileStatus file);
 }

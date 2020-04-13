@@ -10,7 +10,7 @@ public class Constants {
     //中继
     public static Integer ZJ_SYSTEM = 3;
     //26长管
-    public static Integer TFM_SYSTEM = 4;
+    public static Integer TSM_SYSTEM = 4;
     //26站网
-    public static Integer TFS_SYSTEM = 5;
+    public static Integer TSS_SYSTEM = 5;
 }

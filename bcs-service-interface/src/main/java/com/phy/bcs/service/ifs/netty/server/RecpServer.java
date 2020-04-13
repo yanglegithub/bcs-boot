@@ -1,29 +1,32 @@
 package com.phy.bcs.service.ifs.netty.server;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
+import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
-import com.phy.bcs.service.ifs.config.Constants;
 import com.phy.bcs.service.ifs.controller.model.SendFEPMode;
 import com.phy.bcs.service.ifs.netty.server.handler.RecpServerContext;
-import com.phy.bcs.service.ifs.netty.server.handler.RecpServerHander;
+import com.phy.bcs.service.ifs.netty.server.handler.RecpServerHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
-public class RecpServer {
+public class RecpServer extends Thread{
     private final EventLoopGroup group = new NioEventLoopGroup();
     private final Bootstrap bootstrap = new Bootstrap();
     private final int port;
     BcsApplicationConfig config;
 
-    public RecpServer(int port){
+    public RecpServerHandler handler;
+
+    public RecpServer(int port, RecpServerHandler handler){
         this.port = port;
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
+        this.handler = handler;
     }
 
-    public void start(RecpServerHander hander) throws InterruptedException {
+    public void start(RecpServerHandler hander) throws InterruptedException {
         try{
             bootstrap.group(group)
                     .channel(NioDatagramChannel.class)
@@ -50,9 +53,18 @@ public class RecpServer {
         group.shutdownGracefully();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    @Override
+    public void run() {
+        try {
+            start(handler);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {/*
         RecpServer server = new RecpServer(12345);
-        RecpServerHander hander = new RecpServerHander(new RecpServerContext() {
+        RecpServerHandler hander = new RecpServerHandler(new RecpServerContext() {
             @Override
             public int sysTransfor(ChannelHandlerContext ctx, SendFEPMode fep) {
                 return 0;
@@ -62,7 +74,12 @@ public class RecpServer {
             public String protoTransfor(ChannelHandlerContext ctx, SendFEPMode fep) {
                 return "127.0.0.1";
             }
+
+            @Override
+            public void filesend(InfFileStatus file) {
+
+            }
         }.getClass());
         server.start(hander);
-    }
+    */}
 }

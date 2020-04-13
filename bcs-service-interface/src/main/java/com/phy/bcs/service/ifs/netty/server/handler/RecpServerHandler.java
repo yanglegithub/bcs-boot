@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
+public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
 
 
     private InetSocketAddress remoteAdress;
@@ -27,7 +27,7 @@ public class RecpServerHander extends FepOverTimeHandler<DatagramPacket>{
     //需要接收的文件
     private Map<String, RecpServerContext> ipcontext = new HashMap<>();
 
-    public RecpServerHander(Class<? extends RecpServerContext> type){
+    public RecpServerHandler(Class<? extends RecpServerContext> type){
         this.type = type;
         service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);

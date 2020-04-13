@@ -14,11 +14,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
-public class FepTcpServer {
+public class FepTcpServer extends Thread{
     private final int port;
+    private final FepOverTimeHandler handler;
 
-    public FepTcpServer(int port) {
+    public FepTcpServer(int port, FepOverTimeHandler handler) {
         this.port = port;
+        this.handler = handler;
     }
 
     public void start(FepOverTimeHandler hander) throws InterruptedException {
@@ -56,6 +58,15 @@ public class FepTcpServer {
             // 10. 关机的 EventLoopGroup，释放所有资源
             workerGroup.shutdownGracefully().sync();
             bossGroup.shutdownGracefully().sync();
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            start(handler);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

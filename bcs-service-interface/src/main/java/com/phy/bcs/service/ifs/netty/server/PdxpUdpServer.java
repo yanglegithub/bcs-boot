@@ -5,18 +5,22 @@ import com.phy.bcs.service.ifs.netty.codec.pdxp.PdxpMessage;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
-public class PdxpUdpServer {
+public class PdxpUdpServer extends Thread{
     private final EventLoopGroup group = new NioEventLoopGroup();
     private final Bootstrap bootstrap = new Bootstrap();
     private final int port;
 
-    public PdxpUdpServer(int port){
+    private SimpleChannelInboundHandler<DatagramPacket> handler;
+
+    public PdxpUdpServer(int port, SimpleChannelInboundHandler<DatagramPacket> handler){
         this.port = port;
+        this.handler = handler;
     }
 
-    public void start(SimpleChannelInboundHandler<PdxpMessage> hander) throws InterruptedException {
+    public void start(SimpleChannelInboundHandler<DatagramPacket> hander) throws InterruptedException {
         try{
             bootstrap.group(group)
                     .channel(NioDatagramChannel.class)
@@ -25,7 +29,6 @@ public class PdxpUdpServer {
                         @Override
                         protected void initChannel(Channel channel) throws Exception {
                             ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addLast(new PdxpMessageDatagramDecoder());
                             pipeline.addLast(hander);
                         }
                     }).localAddress(port);
@@ -40,5 +43,14 @@ public class PdxpUdpServer {
 
     public void close(){
         group.shutdownGracefully();
+    }
+
+    @Override
+    public void run() {
+        try {
+            start(handler);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

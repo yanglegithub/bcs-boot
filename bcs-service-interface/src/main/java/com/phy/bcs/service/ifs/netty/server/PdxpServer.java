@@ -1,24 +1,29 @@
 package com.phy.bcs.service.ifs.netty.server;
 
 import com.phy.bcs.service.ifs.netty.codec.pdxp.ByteToPdxpMessageDecoder;
+import com.phy.bcs.service.ifs.netty.codec.pdxp.PdxpMessage;
 import com.phy.bcs.service.ifs.netty.codec.pdxp.PdxpMessageToByteEncoder;
 import com.phy.bcs.service.ifs.netty.server.handler.PdxpServerInHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class PdxpServer {
+public class PdxpServer extends Thread{
     private final int port;
 
-    public PdxpServer(int port) {
+    private final SimpleChannelInboundHandler<PdxpMessage> handler;
+
+    public PdxpServer(int port, SimpleChannelInboundHandler<PdxpMessage> handler) {
         this.port = port;
+        this.handler = handler;
     }
 
-    public void start() throws InterruptedException {
+    public void start(SimpleChannelInboundHandler<PdxpMessage> handler) throws InterruptedException {
         // 3. 创建 EventLoopGroup
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -52,7 +57,16 @@ public class PdxpServer {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    @Override
+    public void run() {
+        try {
+            start(handler);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {/*
         if (args.length != 1) {
             System.err.println("Usage: " + PdxpServer.class.getSimpleName() + " <port>");
             return;
@@ -61,5 +75,5 @@ public class PdxpServer {
         int port = Integer.parseInt(args[0]);
         // 2. 呼叫服务器的 start() 方法
         new PdxpServer(port).start();
-    }
+    */}
 }

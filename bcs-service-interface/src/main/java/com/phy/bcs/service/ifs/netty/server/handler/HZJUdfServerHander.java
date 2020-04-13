@@ -17,7 +17,7 @@ public class HZJUdfServerHander extends SimpleChannelInboundHandler<UdfMessage> 
         BcsApplicationConfig config  = SpringContextHolder.getBean(BcsApplicationConfig.class);
         int mid = new BigInteger(udfMessage.getMid()).intValue();
         boolean isFFOC = false;
-        int[] sites = config.getMidip().getWssites();
+        int[] sites = config.getWsmids();
         for (int i=0; i< sites.length; i++){
             if (mid == sites[i]){
                 isFFOC = true;
@@ -25,11 +25,11 @@ public class HZJUdfServerHander extends SimpleChannelInboundHandler<UdfMessage> 
             }
         }
         if(isFFOC){
-            UdfUdpClient client = new UdfUdpClient(config.getIp().getFFOCIP(), config.getPort().getFFOCudf());
+            UdfUdpClient client = new UdfUdpClient(config.getFfocSystem().getIp(), config.getFfocSystem().getUdfPort());
             client.send(udfMessage);
         } else {
 
-            UdfClient tcp = new UdfClient(config.getIp().getTFCIP(), config.getPort().getTFCudf());
+            UdfClient tcp = new UdfClient(config.getTfcSystem().getIp(), config.getTfcSystem().getUdfPort());
             new Thread(new Runnable() {
                 @Override
                 public void run() {

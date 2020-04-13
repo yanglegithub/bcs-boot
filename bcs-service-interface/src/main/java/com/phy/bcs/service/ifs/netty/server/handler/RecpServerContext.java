@@ -35,6 +35,7 @@ public abstract class RecpServerContext {
     private int seqNum = 0;
     //上一次与传送这个文件的时间
     private long timestramp = new Date().getTime();
+    private ParseRECP recpmode;
 
     public RecpServerContext(){
         service = SpringContextHolder.getBean(InfFileStatusService.class);
@@ -53,6 +54,7 @@ public abstract class RecpServerContext {
         ParseRECP msg = null;
         try {
             msg = new ParseRECP(ByteBufUtil.getBytes(packet.content()));
+            recpmode = msg;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return;
@@ -94,6 +96,7 @@ public abstract class RecpServerContext {
             seqNum++;
             if(file.getRecFinish() == 1){
                 sendFepFIN(channelHandlerContext);
+                filesend(file);
                 step = 4;
             }
         } else if(step == 4){
@@ -265,7 +268,12 @@ public abstract class RecpServerContext {
         ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(ParseModeToByte.parseRecpTo(recp)), remoteAdress));
     }
 
+    //转发逻辑，返回要转发的系统的代码
     public abstract int sysTransfor(ChannelHandlerContext ctx, SendFEPMode fep);
 
+    //转发逻辑，返回转发要用的协议
     public abstract String protoTransfor(ChannelHandlerContext ctx, SendFEPMode fep);
+
+    //转发逻辑，执行转发操作,在RECP发送了FEP结束包的时候调用
+    public abstract void filesend(InfFileStatus file);
 }
