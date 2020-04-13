@@ -43,7 +43,7 @@ public class FtpReadProcessor implements Processor {
             String midstr = fileName.split("_")[1];
             int mid = Integer.parseInt(midstr);
             boolean isWss = false;
-            for (int m : config.getMidip().getWssites()){
+            for (int m : config.getWsmids()){
                 isWss = m==mid?true:false;
                 if (isWss)
                     break;
