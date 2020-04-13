@@ -18,7 +18,7 @@ import java.util.List;
 public class ZjRecpServerContext extends RecpServerContext {
     @Override
     public int sysTransfor(ChannelHandlerContext ctx, SendFEPMode fep) {
-        String ip = getRecpmode().getSourceAddress();
+        String ip = getipv4FromRemoteAdress();
         int syscode = getConfig().getSyscodeByIp(ip);
         if(syscode == Constants.ZJ_SYSTEM){
             String filename = fep.getFileName().trim();

@@ -1,5 +1,6 @@
 package com.phy.bcs.service.ifs.netty.server.handler;
 
+import com.phy.bcs.common.util.StringUtils;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.file.service.InfFileStatusService;
@@ -7,6 +8,8 @@ import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
+import com.phy.bcs.service.ifs.netty.server.RecpServer;
+import com.phy.bcs.service.ifs.netty.utils.NumberUtil;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -276,4 +279,14 @@ public abstract class RecpServerContext {
 
     //转发逻辑，执行转发操作,在RECP发送了FEP结束包的时候调用
     public abstract void filesend(InfFileStatus file);
+
+    public String getipv4FromRemoteAdress(){
+        String ip = remoteAdress.getAddress().getHostAddress();
+        byte[] ipbytes = ParseModeToByte.getIpbyteFromStr(ip);
+        String ipstr = "";
+        for(int i=0; i<4; i++){
+            ipstr += (i==0?String.valueOf(ipbytes[i]):("."+String.valueOf(ipbytes[i])));
+        }
+        return ipstr;
+    }
 }
