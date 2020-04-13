@@ -45,7 +45,7 @@ public class PdxpMessageToByteEncoder extends MessageToByteEncoder<PdxpMessage> 
         System.arraycopy(pdxp.getReserve(), 0, src, 20, 4);
         System.arraycopy(NumberUtil.unsignedShortToByte2(pdxp.getDate()), 0, src, 24, 2);
         System.arraycopy(NumberUtil.intToByte4(pdxp.getTime()), 0, src, 26, 4);
-        System.arraycopy(NumberUtil.unsignedShortToByte2(pdxp.getTime()), 0, src, 30, 2);
+        System.arraycopy(NumberUtil.unsignedShortToByte2(pdxp.getL()), 0, src, 30, 2);
         System.arraycopy(pdxp.getData(), 0, src, 32, pdxp.getData().length);
         return src;
     }
