@@ -36,6 +36,8 @@ public class FtpSendRoute extends RouteBuilder {
     private void seadFileRoute() {
         String localDir = ftpProperties.getSendLocalDir();
         String localBakDir = ftpProperties.getSendBakLocalDir();
+        String host = ftpProperties.getHost();
+        int port = ftpProperties.getPort();
         FileUtils.initLocalDir(localDir);
         FileUtils.initLocalDir(localBakDir);
         FileUtils.initLocalDir(FtpProperties.SYNC_SEND_PATH);
@@ -68,7 +70,7 @@ public class FtpSendRoute extends RouteBuilder {
         //发送流水线
         from(fromLocalPathInfo)
             .process(ftpSendProcessor)
-             .toD("ftp://172.16.2.251:21/${in.header.nextUri}?username=yangl&password=20160130yl&fileName=${in.header.newFileName}")
+             .toD("ftp://"+host+":"+port+"/${in.header.nextUri}?username=yangl&password=20160130yl&fileName=${in.header.newFileName}")
             .log(LoggingLevel.INFO, logger, "Sender Process file ${file:name} complete.");
 
         logger.debug("发送流水线已启动");
