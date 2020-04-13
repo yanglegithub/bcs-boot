@@ -35,18 +35,18 @@ public class PdxpMessageToByteEncoder extends MessageToByteEncoder<PdxpMessage> 
 
     private byte[] preData(PdxpMessage pdxp){
         byte[] src = new byte[32 + pdxp.getData().length];
-        ParseUtil.setBytes(src, 0, new byte[]{(byte) pdxp.getVer()});
-        ParseUtil.setBytes(src, 1, pdxp.getMid());
-        ParseUtil.setBytes(src, 3, pdxp.getSid());
-        ParseUtil.setBytes(src, 7, pdxp.getDid());
-        ParseUtil.setBytes(src, 11, pdxp.getBid());
-        ParseUtil.setBytes(src, 15, NumberUtil.intToByte4(pdxp.getNumber()));
-        ParseUtil.setBytes(src, 19, new byte[]{pdxp.getFlag()});
-        ParseUtil.setBytes(src, 20, pdxp.getReserve());
-        ParseUtil.setBytes(src, 24, NumberUtil.unsignedShortToByte2(pdxp.getDate()));
-        ParseUtil.setBytes(src, 26, NumberUtil.intToByte4(pdxp.getTime()));
-        ParseUtil.setBytes(src, 30, NumberUtil.unsignedShortToByte2(pdxp.getTime()));
-        ParseUtil.setBytes(src, 32, pdxp.getData());
+        System.arraycopy(new byte[]{(byte) pdxp.getVer()}, 0, src, 0, 1);
+        System.arraycopy(pdxp.getMid(), 0, src, 1, 2);
+        System.arraycopy(pdxp.getSid(), 0, src, 3, 4);
+        System.arraycopy(pdxp.getDid(), 0, src, 7, 4);
+        System.arraycopy(pdxp.getBid(), 0, src, 11, 4);
+        System.arraycopy(NumberUtil.intToByte4(pdxp.getNumber()), 0, src, 15, 4);
+        System.arraycopy(new byte[]{pdxp.getFlag()}, 0, src, 19, 1);
+        System.arraycopy(pdxp.getReserve(), 0, src, 20, 4);
+        System.arraycopy(NumberUtil.unsignedShortToByte2(pdxp.getDate()), 0, src, 24, 2);
+        System.arraycopy(NumberUtil.intToByte4(pdxp.getTime()), 0, src, 26, 4);
+        System.arraycopy(NumberUtil.unsignedShortToByte2(pdxp.getTime()), 0, src, 30, 2);
+        System.arraycopy(pdxp.getData(), 0, src, 32, pdxp.getData().length);
         return src;
     }
 }
