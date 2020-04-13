@@ -51,7 +51,7 @@ public class FepTcpServer extends Thread{
                     });
             // 8. 绑定的服务器;sync 等待服务器关闭
             ChannelFuture f = b.bind().sync();
-            System.out.println(UdfServer.class.getName() + " started and listen on " + f.channel().localAddress());
+            System.out.println(FepTcpServer.class.getName() + " started and listen on " + f.channel().localAddress());
             // 9. 关闭 channel 和 块，直到它被关闭
             f.channel().closeFuture().sync();
         } finally {

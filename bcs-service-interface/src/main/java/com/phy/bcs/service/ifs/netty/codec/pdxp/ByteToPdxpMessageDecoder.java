@@ -35,7 +35,7 @@ public class ByteToPdxpMessageDecoder extends ByteToMessageDecoder {
         pdxpMessage.setNumber(NumberUtil.byte4ToInt(ByteBufUtil.getBytes(in.readBytes(4)), 0));
         pdxpMessage.setFlag(in.readByte());
         pdxpMessage.setReserve(ByteBufUtil.getBytes(in.readBytes(4)));
-        pdxpMessage.setDate(NumberUtil.byte4ToInt(ByteBufUtil.getBytes(in.readBytes(4)), 0));
+        pdxpMessage.setDate(NumberUtil.byte2ToUnsignedShort(ByteBufUtil.getBytes(in.readBytes(2)), 0));
         pdxpMessage.setTime(NumberUtil.byte4ToInt(ByteBufUtil.getBytes(in.readBytes(4)), 0));
         pdxpMessage.setL(NumberUtil.byte2ToUnsignedShort(ByteBufUtil.getBytes(in.readBytes(2))));
         pdxpMessage.setData(ByteBufUtil.getBytes(in, 0, in.readableBytes()));
