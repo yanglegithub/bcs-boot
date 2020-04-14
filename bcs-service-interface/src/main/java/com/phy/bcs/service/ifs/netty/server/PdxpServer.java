@@ -12,7 +12,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PdxpServer extends Thread{
     private final int port;
 
@@ -47,7 +49,8 @@ public class PdxpServer extends Thread{
                     });
             // 8. 绑定的服务器;sync 等待服务器关闭
             ChannelFuture f = b.bind().sync();
-            System.out.println(PdxpServer.class.getName() + " started and listen on " + f.channel().localAddress());
+            //System.out.println(PdxpServer.class.getName() + " started and listen on " + f.channel().localAddress());
+            log.debug(" started and listen on " + f.channel().localAddress());
             // 9. 关闭 channel 和 块，直到它被关闭
             f.channel().closeFuture().sync();
         } finally {

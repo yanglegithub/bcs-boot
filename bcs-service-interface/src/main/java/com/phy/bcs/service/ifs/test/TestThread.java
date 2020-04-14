@@ -1,5 +1,7 @@
 package com.phy.bcs.service.ifs.test;
 
+import com.phy.bcs.service.ifs.controller.util.ParseUtil;
+
 import java.io.Console;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -50,13 +52,10 @@ public class TestThread {
     }
 
     public static boolean getUserIn(String tip){
-        Scanner reader = new Scanner(System.in);
-        System.out.print(tip+":");
-        if(reader.hasNext()){
-            int i = reader.nextInt();
-            reader.close();
-            return i>0;
-        }
+        byte[] a = new byte[11];
+        byte[] b = new byte[]{0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11};
+        ParseUtil.setBytes(a, 2, b);
+        System.out.println(a);
         return false;
     }
 }

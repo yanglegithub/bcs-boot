@@ -26,7 +26,7 @@ import java.util.Date;
 public abstract class RecpServerContext {
 
     private InetSocketAddress remoteAdress;
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
     private BcsApplicationConfig config;
     //当前正在发送的文件下标，即第几个文件，fileIndex从0开始
     private InfFileStatus file;
@@ -41,13 +41,13 @@ public abstract class RecpServerContext {
     private ParseRECP recpmode;
 
     public RecpServerContext(){
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
     public RecpServerContext(InetSocketAddress remoteAdress){
         this.remoteAdress = remoteAdress;
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
@@ -75,7 +75,7 @@ public abstract class RecpServerContext {
         }else if(step == 1){
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
-            if(!"1".equals(msg.getData().getFlag()))
+            if(!(1 == msg.getData().getFlag()))
                 return;
             file = generFileStatus(channelHandlerContext, msg.getData());
             sendRecpACK(channelHandlerContext);
@@ -117,7 +117,7 @@ public abstract class RecpServerContext {
             sendRecpACK(ctx);
             seqNum++;
             return true;
-        }else if(msg.getFlag() == PackageType.DATA && step == 2 && "1".equals(msg.getData().getFlag())){
+        }else if(msg.getFlag() == PackageType.DATA && step == 2 && 1 == msg.getData().getFlag()){
             seqNum--;
             sendRecpACK(ctx);
             seqNum++;
@@ -164,7 +164,8 @@ public abstract class RecpServerContext {
 
     public InfFileStatus generFileStatus(ChannelHandlerContext ctx, ParseFEP fep){
         SendFEPMode sendMode = fep.getSendFEPMode();
-        InfFileStatus olc = service.findOneByFilename(sendMode.getFileName().trim());
+        //InfFileStatus olc = service.findOneByFilename(sendMode.getFileName().trim());
+        InfFileStatus olc = InfFileStatus.getByFileName(sendMode.getFileName().trim());
         if (olc != null){
             if(olc.getFileContent() == null)
                 olc.setFileContent(new byte[0]);
@@ -187,7 +188,8 @@ public abstract class RecpServerContext {
         newFile.setSendFinish(0);
         newFile.setTransTimes(0);
         newFile.setCreateTime(new Date());
-        service.save(newFile);
+        //service.save(newFile);
+        InfFileStatus.addInfFile(newFile);
         return newFile;
 
     }
@@ -203,14 +205,14 @@ public abstract class RecpServerContext {
 
         if(dbyte.length < packgesize){
             file.setRecFinish(1);
-            service.saveOrUpdate(file);
+            //service.saveOrUpdate(file);
         }
     }
 
     public void sendFepACK(ChannelHandlerContext ctx){
         //FEP装包
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("2");
+        fep.setFlag(2);
         AnswerFEPMode mode = new AnswerFEPMode();
         mode.setID(file.getId());
         mode.setFileName(file.getFileName());
@@ -251,7 +253,7 @@ public abstract class RecpServerContext {
 
     public void sendFepFIN(ChannelHandlerContext ctx){
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("3");
+        fep.setFlag(3);
         FinishFEPMode mode = new FinishFEPMode();
         mode.setID(file.getId());
         fep.setFinishFEPMode(mode);

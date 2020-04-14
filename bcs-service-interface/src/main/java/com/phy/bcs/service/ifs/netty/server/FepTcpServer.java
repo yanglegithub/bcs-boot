@@ -13,7 +13,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class FepTcpServer extends Thread{
     private final int port;
     private final FepOverTimeHandler handler;
@@ -51,7 +53,8 @@ public class FepTcpServer extends Thread{
                     });
             // 8. 绑定的服务器;sync 等待服务器关闭
             ChannelFuture f = b.bind().sync();
-            System.out.println(FepTcpServer.class.getName() + " started and listen on " + f.channel().localAddress());
+            //System.out.println(FepTcpServer.class.getName() + " started and listen on " + f.channel().localAddress());
+            log.debug(" started and listen on " + f.channel().localAddress());
             // 9. 关闭 channel 和 块，直到它被关闭
             f.channel().closeFuture().sync();
         } finally {

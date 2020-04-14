@@ -9,16 +9,16 @@ public class ParseModeToByte {
      */
     public static byte[] parseFEPTo(ParseFEP data){
         byte[] bytes = null;
-        if(data.getFlag().equals("1")){
+        if(data.getFlag() == 1){
             bytes = "1".getBytes();
             bytes = ParseUtil.byteMerger(bytes,parseFEPSendTo(data.getSendFEPMode()));
-        }else if(data.getFlag().equals("2")){
+        }else if(data.getFlag() == 2){
             bytes = "2".getBytes();
             bytes = ParseUtil.byteMerger(bytes,parseFEPAnswerTo(data.getAnswerFEPMode()));
-        }else if(data.getFlag().equals("3")){
+        }else if(data.getFlag() == 3){
             bytes = "3".getBytes();
             bytes = ParseUtil.byteMerger(bytes,parseFEPFinishTo(data.getFinishFEPMode()));
-        }else if(data.getFlag().equals("4")){
+        }else if(data.getFlag() == 4){
             bytes = "4".getBytes();
             bytes = ParseUtil.byteMerger(bytes,parseFEPDataTo(data.getDataFEPMode()));
         }

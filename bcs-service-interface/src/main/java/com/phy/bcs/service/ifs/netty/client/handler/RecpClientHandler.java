@@ -18,7 +18,7 @@ import java.util.List;
 public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
 
     private InetSocketAddress remoteAdress;
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
     private BcsApplicationConfig config;
     //需要发送的文件
     private List<InfFileStatus> files;
@@ -36,7 +36,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
     public RecpClientHandler(InetSocketAddress remoteAdress, List<InfFileStatus> files){
         this.files = files;
         this.remoteAdress = remoteAdress;
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
@@ -95,7 +95,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
             ParseFEP fep = msg.getData();
-            if(!fep.getFlag().equals("3") || fep.getFinishFEPMode().getID() != id)
+            if(!(fep.getFlag() == 3) || fep.getFinishFEPMode().getID() != id)
                 return;
             sendRecpACK(channelHandlerContext);
             seqNum++;
@@ -117,7 +117,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         if(msg.getFlag() == PackageType.ACK && step == 1 && msg.getSerialNumber() == 0){
             sendFepSYN(ctx);
             return true;
-        }else if(msg.getFlag() == PackageType.DATA && msg.getSerialNumber() == seqNum-1 && "2".equals(msg.getData().getFlag())
+        }else if(msg.getFlag() == PackageType.DATA && msg.getSerialNumber() == seqNum-1 && 2 == msg.getData().getFlag()
                 && (step == 1 || step == 3)){
             seqNum--;
             sendRecpACK(ctx);
@@ -128,7 +128,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         }else if(msg.getFlag() == PackageType.ACK && step == 4 && msg.getSerialNumber() == seqNum - 1){
             sendData(ctx);
             return true;
-        }else if(msg.getFlag() == PackageType.DATA && (step == 1 || step == 6) && "3".equals(msg.getData().getFlag())){
+        }else if(msg.getFlag() == PackageType.DATA && (step == 1 || step == 6) && 3 == msg.getData().getFlag()){
             seqNum--;
             sendRecpACK(ctx);
             seqNum++;
@@ -191,7 +191,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         }
         //FEP装包
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("4");
+        fep.setFlag(4);
         DataFEPMode data = new DataFEPMode();
         data.setID(id);
         data.setNum(fileoff);
@@ -222,7 +222,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         InfFileStatus file = files.get(fileIndex);
         //FEP装包
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("1");
+        fep.setFlag(1);
         SendFEPMode send = new SendFEPMode();
         send.setFileName(file.getFileName());
         send.setFileLength(file.getLength());
@@ -283,7 +283,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         //保存文件
         InfFileStatus file = files.get(fileIndex);
         file.setSendFinish(1);
-        service.saveOrUpdate(file);
+        //service.saveOrUpdate(file);
 
         fileIndex ++;
         if(fileIndex >= files.size()){

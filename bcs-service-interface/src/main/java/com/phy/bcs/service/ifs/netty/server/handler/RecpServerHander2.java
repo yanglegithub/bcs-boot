@@ -23,7 +23,7 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
 
 
     private InetSocketAddress remoteAdress;
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
     private BcsApplicationConfig config;
     //需要接收的文件
     private Map<String, Map<String, Object>> ipfile;
@@ -40,7 +40,7 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
 
     public RecpServerHander2(InetSocketAddress remoteAdress){
         this.remoteAdress = remoteAdress;
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
@@ -71,7 +71,7 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
                 return;
             }
         }else if(msg.getFlag() == PackageType.FIN){
-            service.saveOrUpdate(file);
+            //service.saveOrUpdate(file);
             ipfile.remove(ip);
         }
 
@@ -167,7 +167,8 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
 
     public InfFileStatus generFileStatus(ChannelHandlerContext ctx, ParseFEP fep){
         SendFEPMode sendMode = fep.getSendFEPMode();
-        InfFileStatus olc = service.findOneByFilename(sendMode.getFileName().trim());
+        //InfFileStatus olc = service.findOneByFilename(sendMode.getFileName().trim());
+        InfFileStatus olc = InfFileStatus.getByFileName(sendMode.getFileName().trim());
         if (olc != null)
             return olc;
 
@@ -187,7 +188,8 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
         newFile.setSendFinish(0);
         newFile.setTransTimes(0);
         newFile.setCreateTime(new Date());
-        service.save(newFile);
+        //service.save(newFile);
+        InfFileStatus.addInfFile(newFile);
         return newFile;
 
     }
@@ -223,14 +225,14 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
 
         if(dbyte.length < packgesize){
             file.setRecFinish(1);
-            service.saveOrUpdate(file);
+            //service.saveOrUpdate(file);
         }
     }
 
     public void sendFepACK(ChannelHandlerContext ctx){
         //FEP装包
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("2");
+        fep.setFlag(2);
         AnswerFEPMode mode = new AnswerFEPMode();
         mode.setID(file.getId());
         mode.setFileName(file.getFileName());
@@ -263,7 +265,7 @@ public abstract class RecpServerHander2 extends FepOverTimeHandler<DatagramPacke
 
     public void sendFepFIN(ChannelHandlerContext ctx){
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("3");
+        fep.setFlag(3);
         FinishFEPMode mode = new FinishFEPMode();
         mode.setID(file.getId());
         fep.setFinishFEPMode(mode);

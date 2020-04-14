@@ -54,10 +54,10 @@ public class RecpClient {
         }
     }
 
-    public void run() throws InterruptedException {
+    public void run() throws InterruptedException {/*
         InfFileStatusService service = SpringContextHolder.getBean(InfFileStatusService.class);
         List<InfFileStatus> files = service.findAllSendFiles();
         RecpClientHandler handler = new RecpClientHandler(new InetSocketAddress(host,port), files);
         connect(handler);
-    }
+    */}
 }

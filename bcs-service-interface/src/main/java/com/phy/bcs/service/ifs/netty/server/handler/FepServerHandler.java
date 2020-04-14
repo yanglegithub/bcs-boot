@@ -22,12 +22,12 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
     //当前文档大小
     private int filelength = 0;
 
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
     private BcsApplicationConfig config;
 
     public FepServerHandler(){
         super();
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
@@ -35,18 +35,18 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
     @Override
     protected void handleData(ChannelHandlerContext channelHandlerContext, ParseFEP msg) {
         if(step == 0){
-            if(!"1".equals(msg.getFlag()))
+            if(!(1 == msg.getFlag()))
                 return;
             SendFEPMode mode = msg.getSendFEPMode();
             step = 1;
             //生成回应并改状态
             AnswerFEPMode answer = generAnswer(channelHandlerContext, mode);
             ParseFEP res = new ParseFEP();
-            res.setFlag("2");
+            res.setFlag(2);
             res.setAnswerFEPMode(answer);
             channelHandlerContext.writeAndFlush(res);
         }else if(step == 2){
-            if(!"4".equals(msg.getFlag()))
+            if(!(4 == msg.getFlag()))
                 return;
             DataFEPMode mode = msg.getDataFEPMode();
             reciveFile(channelHandlerContext, mode);
@@ -58,7 +58,7 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
         System.out.println("读或写超时，断开tcp连接");
 
         //修改保存数据库
-        service.saveOrUpdate(filestatus);
+        //service.saveOrUpdate(filestatus);
         closefep();
 
         //对方tcp中断或fep连接中断 关闭tcp连接
@@ -77,7 +77,7 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
             filestatus.setFileContent(newbs);
         } catch (Exception e) {
             e.printStackTrace();
-            service.saveOrUpdate(filestatus);
+            //service.saveOrUpdate(filestatus);
             closefep();
             return;
         }
@@ -87,12 +87,12 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
             FinishFEPMode f = new FinishFEPMode();
             f.setID(id);
             ParseFEP fep = new ParseFEP();
-            fep.setFlag("3");
+            fep.setFlag(3);
             fep.setFinishFEPMode(f);
 
             //修改数据库
             filestatus.setRecFinish(1);
-            service.saveOrUpdate(filestatus);
+            //service.saveOrUpdate(filestatus);
             fileSend(filestatus);
 
             ctx.writeAndFlush(fep);
@@ -104,7 +104,8 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
     //生成应答包，并修改相应的fep连接状态
     private AnswerFEPMode generAnswer(ChannelHandlerContext ctx, SendFEPMode sendMode) {
         //查找数据库，看看是否是有中断续传的文件
-        filestatus = service.findOneByFilename(sendMode.getFileName());
+        //filestatus = service.findOneByFilename(sendMode.getFileName());
+        filestatus = InfFileStatus.getByFileName(sendMode.getFileName());
         if(filestatus!=null&&filestatus.getFileContent() == null)
             filestatus.setFileContent(new byte[0]);
         AnswerFEPMode mode = new AnswerFEPMode();
@@ -125,7 +126,8 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
             newFile.setSendFinish(0);
             newFile.setTransTimes(0);
             newFile.setCreateTime(new Date());
-            service.save(newFile);
+            //service.save(newFile);
+            InfFileStatus.addInfFile(newFile);
             filestatus = newFile;
 
             //创建AnswerFEPMode

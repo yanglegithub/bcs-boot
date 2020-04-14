@@ -23,16 +23,16 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
     private int id;
     private List<InfFileStatus> filelist;
 
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
 
     public FepTcpDbClientHander(List<InfFileStatus> filepaths){
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         filelist = filepaths;
     }
     @Override
     protected void handleData(ChannelHandlerContext channelHandlerContext, ParseFEP msg) {
         if(step == 1){
-            if(!"2".equals(msg.getFlag()))
+            if(!(2 == msg.getFlag()))
                 return;
             AnswerFEPMode mode = msg.getAnswerFEPMode();
             InfFileStatus filesta = filelist.get(fileIndex);
@@ -44,7 +44,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
                 closefep(channelHandlerContext);
                 if(mode.getNum() == -1) {
                     filesta.setSendFinish(1);
-                    service.saveOrUpdate(filesta);
+                    //service.saveOrUpdate(filesta);
                 }
             }else {
                 //当前需要传输的文件id
@@ -59,7 +59,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
                 }
             }
         } else if(step == 3){
-            if(!"3".equals(msg.getFlag()))
+            if(!(3 == msg.getFlag()))
                 return;
             FinishFEPMode mode = msg.getFinishFEPMode();
             if(mode.getID() != id)
@@ -68,7 +68,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             InfFileStatus filesta = filelist.get(fileIndex);
             filesta.setSendFinish(1);
             filesta.setUpdateTime(new Date());
-            service.saveOrUpdate(filesta);
+            //service.saveOrUpdate(filesta);
 
             //传输下一个文件
             step= 0;
@@ -119,7 +119,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             data.setData(new String(bytes, "UTF-8"));
 
             ParseFEP fep = new ParseFEP();
-            fep.setFlag("4");
+            fep.setFlag(4);
             fep.setDataFEPMode(data);
             off += bytes.length;
             ctx.writeAndFlush(fep);
@@ -132,7 +132,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
                 dataZ.setData(new String(new byte[0], "UTF-8"));
 
                 ParseFEP fepZ = new ParseFEP();
-                fepZ.setFlag("4");
+                fepZ.setFlag(4);
                 fepZ.setDataFEPMode(dataZ);
                 ctx.writeAndFlush(fepZ);
             }
@@ -156,7 +156,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
         sendfep.setFileLength(filestatus.getLength());
 
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("1");
+        fep.setFlag(1);
         fep.setSendFEPMode(sendfep);
         ctx.writeAndFlush(fep);
         step = 1;

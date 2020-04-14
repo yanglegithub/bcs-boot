@@ -17,7 +17,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
 
 
     private InetSocketAddress remoteAdress;
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
     private BcsApplicationConfig config;
     //需要发送的文件
     private List<InfFileStatus> files;
@@ -35,7 +35,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
     public RecpClientHandler(InetSocketAddress remoteAdress, List<InfFileStatus> files){
         this.files = files;
         this.remoteAdress = remoteAdress;
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
@@ -70,7 +70,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
             }
         } else if(step == 5 && packtype == 2){
             ParseFEP fep = msg.getData();
-            if(!fep.getFlag().equals("3") && fep.getFinishFEPMode().getID() != id)
+            if(!(fep.getFlag() == 3) && fep.getFinishFEPMode().getID() != id)
                 return;
             closeOrNext(channelHandlerContext, true);
         } else if(step == 6 && packtype == 1){
@@ -148,7 +148,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
         }
         //FEP装包
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("4");
+        fep.setFlag(4);
         DataFEPMode data = new DataFEPMode();
         data.setID(id);
         data.setNum(fileoff);
@@ -174,7 +174,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
         InfFileStatus file = files.get(fileIndex);
         //FEP装包
         ParseFEP fep = new ParseFEP();
-        fep.setFlag("1");
+        fep.setFlag(1);
         SendFEPMode send = new SendFEPMode();
         send.setFileName(file.getFileName());
         send.setFileLength(file.getLength());
@@ -224,7 +224,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
         if(finished) {
             InfFileStatus file = files.get(fileIndex);
             file.setSendFinish(1);
-            service.saveOrUpdate(file);
+            //service.saveOrUpdate(file);
         }
 
         fileIndex ++;

@@ -53,7 +53,7 @@ public class FepTcpClient {
     }
 
     public void run(){
-        InfFileStatusService service = SpringContextHolder.getBean(InfFileStatusService.class);
+       /* InfFileStatusService service = SpringContextHolder.getBean(InfFileStatusService.class);
         List<InfFileStatus> files = service.findAllSendFiles();
         try {
             Scanner scan = new Scanner(System.in);
@@ -71,6 +71,6 @@ public class FepTcpClient {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

@@ -27,22 +27,22 @@ public class ByteToFepMessageDecoder extends ByteToMessageDecoder {
             flag = in.readByte();
         ByteBuf buf = null;
         switch (flag){
-            case 0x31:
+            case 0x01:
                 if(in.readableBytes() < 68)
                     return;
                 buf = in.readBytes(68);
                 break;
-            case 0x32:
+            case 0x02:
                 if(in.readableBytes() < 70)
                     return;
                 buf = in.readBytes(70);
                 break;
-            case 0x33:
+            case 0x03:
                 if(in.readableBytes() < 2)
                     return;
                 buf = in.readBytes(2);
                 break;
-            case 0x34:
+            case 0x04:
                 if(in.readableBytes() >= 6 + config.getPackgesize() && length - received >= config.getPackgesize()) {
                     buf = in.readBytes(6 + config.getPackgesize());
                     received += config.getPackgesize();
@@ -65,7 +65,7 @@ public class ByteToFepMessageDecoder extends ByteToMessageDecoder {
         }catch (Exception e){
             return;
         }
-        if("1".equals(fep.getFlag()))
+        if(1 == fep.getFlag())
             length = fep.getSendFEPMode().getFileLength();
         out.add(fep);
     }

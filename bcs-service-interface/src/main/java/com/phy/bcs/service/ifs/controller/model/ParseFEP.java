@@ -12,18 +12,18 @@ import java.io.UnsupportedEncodingException;
 @Data
 public class ParseFEP {
     //标志
-    private String flag;
+    private int flag;
     private SendFEPMode sendFEPMode;
     private FinishFEPMode finishFEPMode;
     private AnswerFEPMode answerFEPMode;
     private DataFEPMode dataFEPMode;
 
     public ParseFEP(byte[] bytes) throws UnsupportedEncodingException {
-        String flag = new String(ParseUtil.strChange(bytes, 0, 1),"UTF-8");
-        this.flag = flag;
+        //String flag = new String(ParseUtil.strChange(bytes, 0, 1),"UTF-8");
+        //this.flag = flag;
         //协议包内容
         byte[] packageData  = ParseUtil.strChange(bytes,1,bytes.length);
-        switch (Integer.parseInt(flag)) {
+        switch (flag) {
             case 1:
                 sendFEPMode = new SendFEPMode(packageData);
                 break;

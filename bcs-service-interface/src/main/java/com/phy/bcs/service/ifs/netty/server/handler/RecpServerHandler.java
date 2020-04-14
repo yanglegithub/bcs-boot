@@ -21,7 +21,7 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
 
 
     private InetSocketAddress remoteAdress;
-    private InfFileStatusService service;
+    //private InfFileStatusService service;
     private BcsApplicationConfig config;
     private Class<? extends RecpServerContext> type;
     //需要接收的文件
@@ -29,7 +29,7 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
 
     public RecpServerHandler(Class<? extends RecpServerContext> type){
         this.type = type;
-        service = SpringContextHolder.getBean(InfFileStatusService.class);
+        //service = SpringContextHolder.getBean(InfFileStatusService.class);
         config = SpringContextHolder.getBean(BcsApplicationConfig.class);
     }
 
@@ -68,7 +68,7 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
             }
         }else if(msg.getFlag() == PackageType.FIN){
             if(context != null){
-                service.saveOrUpdate(context.getFile());
+                //service.saveOrUpdate(context.getFile());
                 ipcontext.remove(context.getIp());
                 sendRecpACK(channelHandlerContext, msg.getSerialNumber());
             }else{

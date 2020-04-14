@@ -27,7 +27,7 @@ public class test {
         System.out.println(parseRECP);*/
        //FEP协议逆解析 数据包测试
         ParseFEP parseFEPto = new ParseFEP();
-        parseFEPto.setFlag("4");
+        parseFEPto.setFlag(4);
         DataFEPMode dataFEPMode = new DataFEPMode();
         dataFEPMode.setNum(1234);
         dataFEPMode.setID(67);
