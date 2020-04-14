@@ -11,10 +11,12 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 
+@Slf4j
 public class ManagerPdxpUdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     InetSocketAddress reomteAdress;
     @Override
@@ -50,6 +52,7 @@ public class ManagerPdxpUdpServerHandler extends SimpleChannelInboundHandler<Dat
                 .l(new BigInteger(ByteBufUtil.getBytes(length)).intValue())
                 .data(ByteBufUtil.getBytes(data))
                 .build();
+        log.debug("pdxp/udp收到数据:{}",pdxp);
         handlerData(ctx, pdxp);
     }
 

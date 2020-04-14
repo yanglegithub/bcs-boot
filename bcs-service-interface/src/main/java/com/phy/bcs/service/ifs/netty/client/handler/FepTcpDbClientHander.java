@@ -7,12 +7,14 @@ import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import com.phy.bcs.service.ifs.netty.server.handler.FepOverTimeHandler;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
     //记录FEP协议进行到哪一步，0:发送FEP请求包; 1:接收请求回应包; 2:发送数据包; 3:接收结束包
     private int step = 0;
@@ -33,6 +35,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
         if(step == 1){
             if(!(2 == msg.getFlag()))
                 return;
+            log.debug("接收到fep请求包");
             AnswerFEPMode mode = msg.getAnswerFEPMode();
             InfFileStatus filesta = filelist.get(fileIndex);
 
@@ -60,6 +63,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
         } else if(step == 3){
             if(!(3 == msg.getFlag()))
                 return;
+            log.debug("接收FEP结束包");
             FinishFEPMode mode = msg.getFinishFEPMode();
             if(mode.getID() != id)
                 return;
@@ -84,12 +88,13 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
         //当tcp连接建立时，建立fep连接发送请求包，发送第一个文件
         if(fileIndex >= filelist.size())
             return;
+        log.debug("发送FEP请求包");
         requestNewFile(ctx);
     }
 
     @Override
     protected void handleAllIdle(ChannelHandlerContext ctx){
-        System.out.println("读或写超时，断开tcp连接");
+        log.debug("读或写超时，断开tcp连接");
         //对方tcp中断或fep连接中断 关闭tcp连接
         ctx.close();
     }

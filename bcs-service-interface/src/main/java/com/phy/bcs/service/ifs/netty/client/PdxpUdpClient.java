@@ -9,9 +9,11 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 
+@Slf4j
 public class PdxpUdpClient {
     private String host;
     private int port;
@@ -40,6 +42,7 @@ public class PdxpUdpClient {
             Channel ch = b.bind(0).sync().channel();
 
             ch.writeAndFlush(msg);
+            log.debug("pdxp发送数据:{}",msg);
 
             ch.closeFuture();
         } finally {

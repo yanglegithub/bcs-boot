@@ -7,6 +7,7 @@ import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import com.phy.bcs.service.ifs.netty.server.handler.FepOverTimeHandler;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -14,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+@Slf4j
 public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
 
     private InetSocketAddress remoteAdress;
@@ -47,6 +49,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             //如果接收到的包不是相应序号的应答包，则舍弃该包
             if(msg.getFlag() != PackageType.ACK)
                 return;
+            log.debug("接收RECP请求应答包");
             //if(msg.getSerialNumber() != seqNum)
             //    return;
             step = 1;
@@ -56,12 +59,14 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             //如果接收到的包不是相应序号的应答包，则舍弃该包
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("发送FEP请求包成功");
             step = 2;
             seqNum++;
         } else if(step == 2){
             //如果接收到的包不是相应序号的数据包，则舍弃该包
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("接收FEP请求应答包");
             if(msg.getData().getAnswerFEPMode().getNum() < 0){
                 sendRecpACK(channelHandlerContext);
                 seqNum++;
@@ -78,6 +83,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         } else if(step == 3 || step == 4){
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("发送数据包{}成功", seqNum);
             //若收到回应，更新文件信息
             if(files.get(fileIndex).getFileContent().length-fileoff < config.getPackgesize()) {
                 fileoff = files.get(fileIndex).getFileContent().length;
@@ -93,6 +99,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         } else if(step == 5){
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("接收到FEP结束确认包");
             ParseFEP fep = msg.getData();
             if(!(fep.getFlag() == 3) || fep.getFinishFEPMode().getID() != id)
                 return;
@@ -102,12 +109,14 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         } else if(step == 6){
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("RECP结束包发送成功");
             channelHandlerContext.close();
         }
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception{
+        log.debug("发送RECP连接请求");
         recpRequest(ctx);
     }
 
@@ -143,6 +152,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
 
     @Override
     public void handleReaderIdle(ChannelHandlerContext ctx){
+        log.debug("读超时，step={}",step);
         if(step == 0){
             recpRequest(ctx);
         }else if(step == 1){

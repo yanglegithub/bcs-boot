@@ -8,10 +8,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ManagerPdxpTcpServerHandler extends SimpleChannelInboundHandler<PdxpMessage>{
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, PdxpMessage msg) throws Exception {
+        log.debug("Pdxp收到数据:{}", msg);
         BcsApplicationConfig config = SpringContextHolder.getBean(BcsApplicationConfig.class);
         new Thread(new Runnable() {
             @Override
