@@ -283,6 +283,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         InfFileStatus file = files.get(fileIndex);
         file.setSendFinish(1);
         //service.saveOrUpdate(file);
+        InfFileStatus.remove(file.getId());
 
         fileIndex ++;
         if(fileIndex >= files.size()){

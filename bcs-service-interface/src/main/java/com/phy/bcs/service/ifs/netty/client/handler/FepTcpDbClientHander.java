@@ -141,6 +141,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
     private void closefep(ChannelHandlerContext ctx){
         step = 0;
         id = 0;
+        InfFileStatus.remove(filelist.get(fileIndex).getId());
         fileIndex++;
         if(fileIndex >= filelist.size()){
             ctx.close();

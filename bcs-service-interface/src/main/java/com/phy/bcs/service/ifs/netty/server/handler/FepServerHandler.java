@@ -7,10 +7,12 @@ import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
 
+@Slf4j
 @Data
 public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
     //记录FEP协议进行到哪一步，0:接收FEP请求包; 1:发送请求回应包; 2:接收数据包; 3:发送结束包
@@ -37,6 +39,7 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
             if(!(1 == msg.getFlag()))
                 return;
             SendFEPMode mode = msg.getSendFEPMode();
+            log.debug("接收到FEP请求包:{}", mode);
             step = 1;
             //生成回应并改状态
             AnswerFEPMode answer = generAnswer(channelHandlerContext, mode);
@@ -45,16 +48,18 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
             res.setAnswerFEPMode(answer);
             channelHandlerContext.writeAndFlush(res);
         }else if(step == 2){
+            log.debug("");
             if(!(4 == msg.getFlag()))
                 return;
             DataFEPMode mode = msg.getDataFEPMode();
+            log.debug("接收到FEP数据包:{}",mode);
             reciveFile(channelHandlerContext, mode);
         }
     }
 
     @Override
     protected void handleAllIdle(ChannelHandlerContext ctx){
-        System.out.println("读或写超时，断开tcp连接");
+        log.debug("读或写超时，断开tcp连接");
 
         //修改保存数据库
         //service.saveOrUpdate(filestatus);

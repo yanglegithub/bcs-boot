@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
 
 
@@ -59,6 +61,7 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
             context.setTimestramp(new Date().getTime());
         if(msg.getFlag() == PackageType.SYN){
             if(context == null){
+                log.debug("收到RECP连接请求,ip:{}",msg.getSourceAddress());
                 RecpServerContext newconnect = createContext();
                 newconnect.setIp(msg.getSourceAddress());
                 newconnect.setRemoteAdress(packet.sender());
@@ -69,6 +72,7 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
             if(context != null){
                 //service.saveOrUpdate(context.getFile());
                 ipcontext.remove(context.getIp());
+                log.debug("RECP连接请求结束，ip:{}",context.getIp());
                 sendRecpACK(channelHandlerContext, msg.getSerialNumber());
             }else{
                 sendRecpACK(channelHandlerContext, msg.getSerialNumber());

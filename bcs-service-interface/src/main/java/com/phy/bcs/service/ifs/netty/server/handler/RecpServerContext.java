@@ -14,6 +14,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -21,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+@Slf4j
 @Data
 public abstract class RecpServerContext {
 
@@ -76,6 +78,7 @@ public abstract class RecpServerContext {
                 return;
             if(!(1 == msg.getData().getFlag()))
                 return;
+            log.debug("收到FEP请求包,FEP回应包已发:{}",msg);
             file = generFileStatus(channelHandlerContext, msg.getData());
             sendRecpACK(channelHandlerContext);
             seqNum++;
@@ -84,6 +87,7 @@ public abstract class RecpServerContext {
         } else if(step == 2){
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("收到FEP请求应答包");
             if(file.getRecFinish() == 1)
                 step = 1;
             else
@@ -92,6 +96,7 @@ public abstract class RecpServerContext {
         } else if(step == 3 || step == 6){
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("收到FEP数据包");
             reciveData(msg.getData());
             sendRecpACK(channelHandlerContext);
             step = 6;
@@ -104,6 +109,7 @@ public abstract class RecpServerContext {
         } else if(step == 4){
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
+            log.debug("接收结束，结束确认包已发送");
             seqNum++;
             step = 1;
         }
@@ -137,6 +143,7 @@ public abstract class RecpServerContext {
         int sec = config.getTimeout();
         if(new Date().getTime() - timestramp < sec * 1000 || sec == 0)
             return;
+        log.debug("ip;{} 读超时,现在处于step={}", ip, step);
         if(step == 1){
             seqNum--;
             sendRecpACK(ctx);
