@@ -1,7 +1,6 @@
 package com.phy.bcs.service.ifs.netty.server.handler;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
-import com.phy.bcs.service.file.service.InfFileStatusService;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;

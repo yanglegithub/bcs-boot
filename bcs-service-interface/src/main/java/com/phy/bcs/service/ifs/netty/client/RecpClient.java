@@ -2,7 +2,6 @@ package com.phy.bcs.service.ifs.netty.client;
 
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
-import com.phy.bcs.service.file.service.InfFileStatusService;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.netty.client.handler.RecpClientHandler;
 import com.phy.bcs.service.ifs.netty.codec.recp.RecpMessageDatagramDecoder;

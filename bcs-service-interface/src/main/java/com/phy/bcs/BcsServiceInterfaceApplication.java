@@ -11,9 +11,12 @@ import com.phy.bcs.service.ifs.netty.server.handler.site26.*;
 import com.phy.bcs.service.ifs.netty.server.handler.zj.ZjFepServerHandler;
 import com.phy.bcs.service.ifs.netty.server.handler.zj.ZjRecpServerContext;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class BcsServiceInterfaceApplication {
     private static BcsApplicationConfig config;
 
