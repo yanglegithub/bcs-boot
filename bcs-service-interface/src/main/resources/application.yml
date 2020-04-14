@@ -1,6 +1,12 @@
 server:
   port: 8210
 
+logging:
+  path: ../
+  file: springboot.log
+  level:
+    com.phy.bcs.service.ifs: debug
+
 fileprocess:
   ftp:
     host: 172.16.2.251
@@ -78,69 +84,8 @@ net-application:
     udf-port: 12301
     fep-port: 12302
     pdxp-port: 12303
-  local-hzj-udfport: 12301
-  local-tsm-fepport: 12302
-  local-tsm-pdxpport: 12304
-  local-tss-fepport: 12305
-  local-zj-fepport: 12306
-
-
-
-# ===================================================================
-# Spring Boot configuration for the "dev" profile.
-#
-# This configuration overrides the application.yml file.
-# ===================================================================
-
-# ===================================================================
-# Standard Spring Boot properties.
-# Full reference is available at:
-# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
-# ===================================================================
-
-spring:
-  profiles:
-    active: dev
-  devtools:
-    restart:
-      enabled: false
-    livereload:
-      enabled: true # we use gulp + BrowserSync for livereload
-  datasource:
-    #driver-class-name: com.mysql.jdbc.Driver
-    #url: jdbc:mysql://localhost:3306/jeecg-boot?useUnicode=true&characterEncoding=utf-8&useSSL=true
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:oracle:thin:@localhost:1521:xe
-    username: pkan
-    password: nc.plan
-    hikari:
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        useServerPrepStmts: true
-
-#mybaits-plus配置，修改主键类型，mapper.xml、type 别名等
-mybatis-plus:
-  mapper-locations: classpath*:/mappings/service/*/*Mapper.xml
-  typeAliasesPackage: com.phy.bcs.*.*.model
-  global-config:
-    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
-    id-type: 3
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 1
-    #驼峰下划线转换
-    db-column-underline: true
-    #刷新mapper 调试神器
-    refresh-mapper: false
-    #logic-delete-value: -2
-    #logic-not-delete-value: 0
-    db-type: oracle
-    identifier-quote: "\"%s\""
-    #数据库大写下划线转换
-    #capital-mode: true
-  #    meta-object-handler: com.c503.plan.common.persistence.handler.EntityMetaObjectHandler
-  configuration:
-    map-underscore-to-camel-case: true
-    cache-enabled: true
-    jdbc-type-for-null: 'NULL'
+  local-hzj-udfport: 12304
+  local-tsm-fepport: 12305
+  local-tsm-pdxpport: 12306
+  local-tss-fepport: 12307
+  local-zj-fepport: 12308
