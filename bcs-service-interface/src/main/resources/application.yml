@@ -11,8 +11,8 @@ fileprocess:
   ftp:
     host: 172.16.2.251
     port: 21
-    username: yangl
-    password: 20160130yl
+    username: dev
+    password: 123456
     scan-delay: 1000
     readerCharset: "GBK"
     senderCharset: "GBK"
@@ -31,15 +31,16 @@ fileprocess:
 net-application:
   #对应五型的任务号
   wxmids:
-    - 12
-    - 14
-    - 15
+    - 0x01
+    - 0x04
+    - 0x02
+    - 0x03
   #对应54的任务号
   wsmids:
-    - 16
-    - 17
-    - 18
-    - 19
+    - 0x1001
+    - 0x1002
+    - 0x1003
+    - 0x1004
   #根据该参数判断当前的网络状态
   netstatustimes: 5
   #重连次数

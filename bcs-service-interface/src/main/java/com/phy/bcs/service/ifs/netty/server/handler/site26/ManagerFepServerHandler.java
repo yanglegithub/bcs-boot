@@ -6,12 +6,14 @@ import com.phy.bcs.service.ifs.controller.model.SendFEPMode;
 import com.phy.bcs.service.ifs.netty.client.RecpClient;
 import com.phy.bcs.service.ifs.netty.client.handler.RecpClientHandler;
 import com.phy.bcs.service.ifs.netty.server.handler.FepServerHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+@ChannelHandler.Sharable
 public class ManagerFepServerHandler extends FepServerHandler {
     @Override
     protected int sysTransfor(ChannelHandlerContext ctx, SendFEPMode mode) {

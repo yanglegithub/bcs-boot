@@ -101,11 +101,11 @@ public class FtpReadRoute extends RouteBuilder {
             "&idempotent=true&idempotentRepository=#bean:localIdempotentRepository" +
             "&readLock=idempotent&readLockRemoveOnCommit=false&readLockRemoveOnRollback=false";
         String fromHZJLocalPathInfo = "file:" + localTempFilePath + (localTempFilePath.endsWith("/")?"":"/") + "HZJ" + "?delay=" + delay +
-                "&move=" + "../" + localBakFilePath + "&readLockCheckInterval=100" + "&idempotentKey=${file:name}" +
+                "&move=" + "../" + localBakFilePath + "&readLockCheckInterval=100" +
                 "&idempotent=true&idempotentRepository=#bean:localIdempotentRepository" +
                 "&readLock=idempotent&readLockRemoveOnCommit=false&readLockRemoveOnRollback=false";
         String fromInternalLocalPathInfo = "file:" + localTempFilePath + (localTempFilePath.endsWith("/")?"":"/") + "INTERNAL" + "?delay=" + delay +
-                "&move=" + "../" + localBakFilePath + "&readLockCheckInterval=100" + "&idempotentKey=${file:name}" +
+                "&move=" + "../" + localBakFilePath + "&readLockCheckInterval=100" +
                 "&idempotent=true&idempotentRepository=#bean:localIdempotentRepository" +
                 "&readLock=idempotent&readLockRemoveOnCommit=false&readLockRemoveOnRollback=false";
 

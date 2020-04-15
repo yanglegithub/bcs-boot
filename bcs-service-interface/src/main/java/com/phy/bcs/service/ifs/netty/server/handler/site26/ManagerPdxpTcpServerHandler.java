@@ -4,13 +4,11 @@ import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
 import com.phy.bcs.service.ifs.netty.client.PdxpUdpClient;
 import com.phy.bcs.service.ifs.netty.codec.pdxp.PdxpMessage;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ChannelHandler.Sharable
 public class ManagerPdxpTcpServerHandler extends SimpleChannelInboundHandler<PdxpMessage>{
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, PdxpMessage msg) throws Exception {
