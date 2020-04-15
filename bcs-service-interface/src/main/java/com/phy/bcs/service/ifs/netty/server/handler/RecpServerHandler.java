@@ -79,7 +79,8 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
             }
             return;
         }
-        context.handleData(channelHandlerContext, packet);
+        if(context != null)
+            context.handleData(channelHandlerContext, packet);
         remoteAdress = null;
     }
 

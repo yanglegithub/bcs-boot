@@ -13,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+@ChannelHandler.Sharable
 public class ManagerFepServerHandler extends FepServerHandler {
     @Override
     protected int sysTransfor(ChannelHandlerContext ctx, SendFEPMode mode) {

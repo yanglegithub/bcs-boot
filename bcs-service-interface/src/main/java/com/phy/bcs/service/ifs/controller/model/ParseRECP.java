@@ -30,7 +30,7 @@ public class ParseRECP {
         String fl = new String("UTF-8");
         int flagInt = ParseUtil.strChange(bytes, 0, 1)[0];
         switch (flagInt) {
-            case 0:
+            case 1:
                 flag = PackageType.SYN;
                 break;
             case 2:

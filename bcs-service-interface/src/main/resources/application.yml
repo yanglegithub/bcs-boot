@@ -46,45 +46,45 @@ net-application:
   #重连次数
   reconnectTimes: 10
   #超时时间（秒）
-  timeout: 0
+  timeout: 30
   #包大小（字节数）
   packgesize: 4096
   #五型IP与端口号配置
   tfc-system:
-    ip: 127.0.0.1
-    udf-port: 12301
-    fep-port: 12302
-    pdxp-port: 12303
+    ip: 10.11.11.161
+    udf-port: 57197
+    fep-port: 57197
+    pdxp-port: 57197
   #54控制系统IP与端口号配置
   ffoc-system:
-    ip: 127.0.0.1
-    udf-port: 12301
-    fep-port: 12302
-    pdxp-port: 12303
+    ip: 10.11.11.161
+    udf-port: 10001
+    fep-port: 10001
+    pdxp-port: 10001
   #26站网IP与端口号配置
   tss-system:
-    ip: 127.0.0.1
-    udf-port: 12301
-    fep-port: 12302
-    pdxp-port: 12303
+    ip: 10.11.11.161
+    udf-port: 10004
+    fep-port: 10004
+    pdxp-port: 10004
   #航侦局IP与端口号配置
   hzj-system:
-    ip: 127.0.0.1
+    ip: 10.11.11.161
     udf-port: 12301
     fep-port: 12302
     pdxp-port: 12303
   #26长管IP与端口号配置
   tsm-system:
-    ip: 127.0.0.1
-    udf-port: 12301
-    fep-port: 12302
-    pdxp-port: 12303
+    ip: 10.11.11.161
+    udf-port: 10002
+    fep-port: 10002
+    pdxp-port: 10002
   #中继中心IP与端口号配置
   zj-system:
-    ip: 127.0.0.1
-    udf-port: 12301
-    fep-port: 12302
-    pdxp-port: 12303
+    ip: 10.11.11.161
+    udf-port: 10005
+    fep-port: 10005
+    pdxp-port: 10005
   local-hzj-udfport: 12304
   local-tsm-fepport: 12305
   local-tsm-pdxpport: 12306
