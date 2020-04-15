@@ -206,7 +206,7 @@ public abstract class RecpServerContext {
         DataFEPMode data = fep.getDataFEPMode();
         if(data.getID() != file.getId() || data.getNum() != (file.getFileContent().length))
             return;
-        byte[] dbyte = data.getData().getBytes();
+        byte[] dbyte = data.getData();
         file.setFileContent(ParseUtil.byteMerger(file.getFileContent(), dbyte));
 
         if(dbyte.length < packgesize){

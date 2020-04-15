@@ -31,7 +31,7 @@ public class test {
         DataFEPMode dataFEPMode = new DataFEPMode();
         dataFEPMode.setNum(1234);
         dataFEPMode.setID(67);
-        dataFEPMode.setData("FEP协议数据包");
+        dataFEPMode.setData("FEP协议数据包".getBytes());
         parseFEPto.setDataFEPMode(dataFEPMode);
         byte[] bytes = ParseModeToByte.parseFEPTo(parseFEPto);
         System.out.println(bytes);

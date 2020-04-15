@@ -74,7 +74,7 @@ public abstract class FepServerHandler extends FepOverTimeHandler<ParseFEP> {
         int packgesize = config.getPackgesize();
         if(mode.getID() != id || mode.getNum() != filelength)
             return;
-        byte[] filebs = mode.getData().getBytes();
+        byte[] filebs = mode.getData();
         //filebytes = ParseUtil.byteMerger(filebytes, filebs);
         try {
             byte[] newbs = ParseUtil.byteMerger(filestatus.getFileContent(), filebs);

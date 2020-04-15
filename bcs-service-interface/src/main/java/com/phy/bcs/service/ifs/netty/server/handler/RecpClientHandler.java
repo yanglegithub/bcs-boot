@@ -151,11 +151,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP>{
         DataFEPMode data = new DataFEPMode();
         data.setID(id);
         data.setNum(fileoff);
-        try {
-            data.setData(new String(dbyte, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        data.setData(dbyte);
         //RECP装包
         ParseRECP recp = new ParseRECP();
         recp.setFlag(PackageType.DATA);

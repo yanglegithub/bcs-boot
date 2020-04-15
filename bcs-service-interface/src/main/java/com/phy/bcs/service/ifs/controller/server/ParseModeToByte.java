@@ -10,16 +10,16 @@ public class ParseModeToByte {
     public static byte[] parseFEPTo(ParseFEP data){
         byte[] bytes = null;
         if(data.getFlag() == 1){
-            bytes = "1".getBytes();
+            bytes = new byte[]{0x01};
             bytes = ParseUtil.byteMerger(bytes,parseFEPSendTo(data.getSendFEPMode()));
         }else if(data.getFlag() == 2){
-            bytes = "2".getBytes();
+            bytes = new byte[]{0x02};
             bytes = ParseUtil.byteMerger(bytes,parseFEPAnswerTo(data.getAnswerFEPMode()));
         }else if(data.getFlag() == 3){
-            bytes = "3".getBytes();
+            bytes = new byte[]{0x03};
             bytes = ParseUtil.byteMerger(bytes,parseFEPFinishTo(data.getFinishFEPMode()));
         }else if(data.getFlag() == 4){
-            bytes = "4".getBytes();
+            bytes = new byte[]{0x04};
             bytes = ParseUtil.byteMerger(bytes,parseFEPDataTo(data.getDataFEPMode()));
         }
         return bytes;
@@ -47,7 +47,7 @@ public class ParseModeToByte {
         byte[] bytes = new byte[0];
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.intToBytes2(data.getNum()));
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.int2ToBytes(data.getID()));
-        bytes = ParseUtil.byteMerger(bytes,data.getData().getBytes());
+        bytes = ParseUtil.byteMerger(bytes,data.getData());
         return bytes;
     }
     /**

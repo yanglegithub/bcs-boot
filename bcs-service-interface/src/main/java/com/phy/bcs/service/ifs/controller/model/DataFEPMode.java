@@ -16,14 +16,14 @@ public class DataFEPMode {
     //2byte
     private int ID;
     //n byte
-    private String data;
+    private byte[] data;
     public DataFEPMode(byte[] bytes) throws UnsupportedEncodingException {
         byte[] numBytes = ParseUtil.strChange(bytes, 0, 4);
         num = ParseUtil.bytesToInt2(numBytes, 0);
         byte[] idBytes = ParseUtil.strChange(bytes, 4, 6);
         ID = ParseUtil.bytes2ToInt(idBytes, 0);
         byte[] sourceAddressByte = ParseUtil.strChange(bytes, 6, bytes.length);
-        data = new String(sourceAddressByte, "UTF-8");
+        data = sourceAddressByte;
     }
     public DataFEPMode(){
 

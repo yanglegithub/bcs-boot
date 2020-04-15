@@ -120,7 +120,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
             DataFEPMode data = new DataFEPMode();
             data.setNum(off);
             data.setID(id);
-            data.setData(new String(bytes, "UTF-8"));
+            data.setData(bytes);
 
             ParseFEP fep = new ParseFEP();
             fep.setFlag(4);
@@ -133,7 +133,7 @@ public class FepTcpDbClientHander extends FepOverTimeHandler<ParseFEP> {
                 DataFEPMode dataZ = new DataFEPMode();
                 dataZ.setNum(off);
                 dataZ.setID(id);
-                dataZ.setData(new String(new byte[0], "UTF-8"));
+                dataZ.setData(new byte[0]);
 
                 ParseFEP fepZ = new ParseFEP();
                 fepZ.setFlag(4);
