@@ -1,5 +1,6 @@
 package com.phy.bcs.service.ifs.test;
 
+import com.phy.bcs.service.ifs.controller.model.PackageType;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 
 import java.io.Console;
@@ -56,6 +57,7 @@ public class TestThread {
         byte[] b = new byte[]{0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11};
         ParseUtil.setBytes(a, 2, b);
         System.out.println(a);
+        System.out.println(PackageType.SYN == PackageType.SYN);
         return false;
     }
 }

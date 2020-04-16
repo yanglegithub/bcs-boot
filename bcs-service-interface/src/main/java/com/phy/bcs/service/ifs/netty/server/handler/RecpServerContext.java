@@ -145,9 +145,11 @@ public abstract class RecpServerContext {
             return;
         log.debug("ip;{} 读超时,现在处于step={}", ip, step);
         if(step == 1){
-            seqNum--;
-            sendRecpACK(ctx);
-            seqNum++;
+            if(seqNum == 1) {
+                seqNum--;
+                sendRecpACK(ctx);
+                seqNum++;
+            }
         }else if(step == 2){
             seqNum--;
             sendRecpACK(ctx);

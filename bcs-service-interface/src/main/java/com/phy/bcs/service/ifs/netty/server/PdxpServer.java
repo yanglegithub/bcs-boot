@@ -44,7 +44,7 @@ public class PdxpServer extends Thread{
                             socketChannel.pipeline()
                                     .addLast(new PdxpMessageToByteEncoder(),
                                             new ByteToPdxpMessageDecoder(),
-                                            new PdxpServerInHandler());
+                                            handler);
                         }
                     });
             // 8. 绑定的服务器;sync 等待服务器关闭

@@ -12,7 +12,9 @@ import io.netty.channel.socket.DatagramPacket;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,15 +71,15 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
                 context = newconnect;
             }
         }else if(msg.getFlag() == PackageType.FIN){
-            if(context != null){
+            if(context != null && context.getSeqNum() == msg.getSerialNumber()){
                 //service.saveOrUpdate(context.getFile());
                 ipcontext.remove(context.getIp());
                 log.debug("RECP连接请求结束，ip:{}",context.getIp());
                 sendRecpACK(channelHandlerContext, msg.getSerialNumber());
-            }else{
+                return;
+            }else if(context == null){
                 sendRecpACK(channelHandlerContext, msg.getSerialNumber());
             }
-            return;
         }
         if(context != null)
             context.handleData(channelHandlerContext, packet);
@@ -103,7 +105,11 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
     public void sendRecpACK(ChannelHandlerContext ctx, int seqNum){
         ParseRECP recp = new ParseRECP();
         recp.setFlag(PackageType.ACK);
-        recp.setSourceAddress(((InetSocketAddress)ctx.channel().localAddress()).getHostName());
+        try {
+            recp.setSourceAddress(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         recp.setSerialNumber(seqNum);
         recp.setReservedBits("1234");
         recp.setAbstractLength(0);

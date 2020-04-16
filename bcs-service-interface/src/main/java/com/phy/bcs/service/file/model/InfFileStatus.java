@@ -6,10 +6,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.phy.bcs.service.ifs.ftp.camel.util.FileUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +28,7 @@ import java.util.List;
  * @since 2020-04-02
  */
 @Data
+@Slf4j
 //@EqualsAndHashCode(callSuper = true)
 //@Accessors(chain = true)
 //@TableName("INF_FILE_STATUS")
@@ -112,10 +118,22 @@ public class InfFileStatus extends BaseModel {
     private Date updateTime;
 
     /**
+     * 保存路径
+     */
+    private String path;
+
+    /**
      * 备注
      */
     //@TableField("REMARK")
     private String remark;
+    public static InfFileStatus findById(Integer id){
+        for (InfFileStatus file : infFileStatuses){
+            if(file.getId() == id)
+                return file;
+        }
+        return null;
+    }
 
     public static InfFileStatus getByFileName(String fileName){
         for (InfFileStatus file : infFileStatuses){
@@ -142,22 +160,41 @@ public class InfFileStatus extends BaseModel {
         return false;
     }
 
-    /*public static void main(String[] args){
-        InfFileStatus file = new InfFileStatus();
-        file.setFileName("hello");
-        InfFileStatus file1 = new InfFileStatus();
-        InfFileStatus file2 = new InfFileStatus();
-        InfFileStatus file3 = new InfFileStatus();
-        InfFileStatus.addInfFile(file);
-        InfFileStatus.addInfFile(file1);
-        InfFileStatus.addInfFile(file2);
-        InfFileStatus.addInfFile(file3);
-        InfFileStatus.remove(2);
-        if(true){
-            InfFileStatus file5 = InfFileStatus.getByFileName("hello");
-            file5.setFileName("hello,world");
+    public static boolean saveFileInNewname(InfFileStatus fileStatus, String newFileName){
+        boolean issuccess = true;
+        File dirpath = new File(fileStatus.getPath());
+        if(!dirpath.exists())
+            FileUtils.mkdirs(dirpath);
+        File binFile = new File(fileStatus.getPath()+"/"+newFileName==null?fileStatus.getFileName():newFileName);
+        FileOutputStream out = null;
+        try {
+            if (!binFile.exists())
+                binFile.createNewFile();
+             out = new FileOutputStream(binFile);
+             out.write(fileStatus.getFileContent()==null?new byte[0]:fileStatus.getFileContent());
+        }catch (IOException e){
+            issuccess = false;
+            log.debug("文件id:{},name:{},创建失败",fileStatus.getId(), fileStatus.getFileName());
+        }finally {
+            if(out!=null) {
+                try {
+                    out.close();
+                }catch (IOException e1){
+                    log.debug("输出IO流关闭失败");
+                }
+            }
         }
-        System.out.println("end");
-    }*/
+        return issuccess;
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        String path = "../pathtest/";
+        FileUtils.mkdirs(path);
+        String filename = "test.txt";
+        File newfile = new File(path+"/"+filename);
+        if(!newfile.exists())
+            newfile.createNewFile();
+    }
 
 }
