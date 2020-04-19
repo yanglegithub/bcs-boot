@@ -1,5 +1,6 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
+import com.phy.bcs.service.ifs.ftp.camel.filter.ReadFileFilter;
 import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -43,13 +44,13 @@ public class FtpSendProcessor implements Processor {
         }
         String flag = fileName.split("_")[0];
         if ("TOHZJ".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", ftpProperties.getHzjRead());
+            exchange.getMessage().getHeaders().put("nextUri", ReadFileFilter.pathHandle(ftpProperties.getHzjRead(), true));
             exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
         } else if ("TO5X".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", ftpProperties.getTfcRead());
+            exchange.getMessage().getHeaders().put("nextUri", ReadFileFilter.pathHandle(ftpProperties.getTfcRead(), true));
             exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
         } else if ("TO54".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", ftpProperties.getFfocRead());
+            exchange.getMessage().getHeaders().put("nextUri", ReadFileFilter.pathHandle(ftpProperties.getFfocRead(), true));
             exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
         }
     }

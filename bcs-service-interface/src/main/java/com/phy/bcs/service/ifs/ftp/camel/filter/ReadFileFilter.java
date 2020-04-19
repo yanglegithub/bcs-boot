@@ -18,12 +18,12 @@ public class ReadFileFilter implements GenericFileFilter {
     @Override
     public boolean accept(GenericFile file) {
         String filepath = file.getAbsoluteFilePath();
-        filepath = pathHandle(filepath);
-        if(filepath.equals(pathHandle(ftpProperties.getHzjSend()))
-                ||filepath.equals(pathHandle(ftpProperties.getInternalSendHzj()))
-                ||filepath.equals(pathHandle(ftpProperties.getTfcSend26m()))
-                ||filepath.equals(pathHandle(ftpProperties.getTfcSend26s()))
-                ||filepath.equals(pathHandle(ftpProperties.getTfcSendZj()))
+        filepath = pathHandle(filepath, false);
+        if(filepath.equals(pathHandle(ftpProperties.getHzjSend(), true))
+                ||filepath.equals(pathHandle(ftpProperties.getInternalSendHzj(), true))
+                ||filepath.equals(pathHandle(ftpProperties.getTfcSend26m() ,true))
+                ||filepath.equals(pathHandle(ftpProperties.getTfcSend26s(), true))
+                ||filepath.equals(pathHandle(ftpProperties.getTfcSendZj(), true))
                 ||file.isDirectory()) {
             return true;
         }
@@ -31,10 +31,15 @@ public class ReadFileFilter implements GenericFileFilter {
             return false;
     }
 
-     public String pathHandle(String path){
-        String handledpath = path.substring(0, path.lastIndexOf('/'));
-        handledpath = path.replaceAll("/+","/");
-        handledpath = handledpath.replaceAll("(^/+)|(/+$)","");
+    public static String pathHandle(String path, boolean isDirectory){
+        String handledpath;
+        if(!isDirectory) {
+            handledpath = path.substring(0, path.lastIndexOf('/') < 0 ? path.length() : path.lastIndexOf('/'))
+                    .replaceAll("/+", "/")
+                    .replaceAll("(^/+)|(/+$)", "");
+        }else{
+            handledpath = path.replaceAll("/+", "/").replaceAll("(^/+)|(/+$)", "");
+        }
         return handledpath;
     }
 
@@ -45,10 +50,10 @@ public class ReadFileFilter implements GenericFileFilter {
         while (scanner.hasNextLine()){
             String filename="abc/def/hijk/lmn.txt";
             String line = scanner.nextLine();
-            line = line.substring(0, line.lastIndexOf('/'));
-            line = line.replaceAll("/+","/");
-            line = line.replaceAll("(^/+)|(/+$)","");
-            System.out.println("handled:"+line);
+            String liner = pathHandle(line, false);
+            System.out.println("filepath handled:"+liner);
+            liner = pathHandle(line, true);
+            System.out.println("directorypath handled:"+liner);
             System.out.printf("input:");
         }
     }

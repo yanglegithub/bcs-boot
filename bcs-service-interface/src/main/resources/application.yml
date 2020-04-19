@@ -2,8 +2,7 @@ server:
   port: 8210
 
 logging:
-  path: ../
-  file: springboot.log
+  file: log/springboot.log
   level:
     com.phy.bcs.service.ifs: debug
 
@@ -30,21 +29,21 @@ fileprocess:
     #read-file-pattern: '.*(_MPSS_JB17){1}.*'
     read-file-pattern: '^.*_.*_.*'
     #航侦局向内部发送的文件夹
-    hzj-send: "HZJ/FROMHZJ/"
+    hzj-send: "/HZJ/FROMHZJ/"
     #航侦局读取的文件夹
-    hzj-read: "HZJ/TOHZJ/"
+    hzj-read: "/HZJ/TOHZJ/"
     #内部向航侦局发送的文件夹
-    internal-send-hzj: "INTERNAL/FROMINTERNAL/HZJ/"
+    internal-send-hzj: "/INTERNAL/FROMINTERNAL/HZJ/"
     #五型向26站网发送的文件夹
-    tfc-send-26s: "INTERNAL/FROMINTERNAL/26S/"
+    tfc-send-26s: "/INTERNAL/FROMINTERNAL/26S/"
     #五型向26长管发送的文件夹
-    tfc-send-26m: "INTERNAL/FROMINTERNAL/26M/"
+    tfc-send-26m: "/INTERNAL/FROMINTERNAL/26M/"
     #五型向中继中心发送的文件夹
-    tfc-send-zj: "INTERNAL/FROMINTERNAL/ZJ/"
+    tfc-send-zj: "/INTERNAL/FROMINTERNAL/ZJ/"
     #五型读取的文件夹
-    tfc-read: "INTERNAL/TO5X/"
+    tfc-read: "/INTERNAL/TO5X/"
     #54读取的文件夹
-    ffoc-read: "INTERNAL/TO54/"
+    ffoc-read: "/INTERNAL/TO54/"
 
 
 net-application:

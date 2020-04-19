@@ -1,6 +1,7 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
+import com.phy.bcs.service.ifs.ftp.camel.filter.ReadFileFilter;
 import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -41,7 +42,8 @@ public class FtpReadProcessor implements Processor {
 
         //文件转发
         String newName = fileName.substring(fileName.lastIndexOf('/') + 1);
-        if (filePath.startsWith(ftpProperties.getHzjSend())) {
+        String handlepath = ReadFileFilter.pathHandle(filePath, false);
+        if (handlepath.equals(ReadFileFilter.pathHandle(ftpProperties.getHzjSend(), true))) {
             String midstr = fileName.split("_")[2];
             int mid = Integer.parseInt(midstr, 16);
             boolean isWss = false;
@@ -55,14 +57,14 @@ public class FtpReadProcessor implements Processor {
             else
                 newName = "TO5X_" +  newName;
         }
-        else if (filePath.startsWith(ftpProperties.getInternalSendHzj())) {
+        else if (handlepath.equals(ReadFileFilter.pathHandle(ftpProperties.getInternalSendHzj(), true))) {
             newName = "TOHZJ_" + newName;
         }
-        else if (filePath.startsWith(ftpProperties.getTfcSend26s()))
+        else if (handlepath.equals(ReadFileFilter.pathHandle(ftpProperties.getTfcSend26s(),true)))
             newName = "TO26S_" + newName;
-        else if (filePath.startsWith(ftpProperties.getTfcSend26m()))
+        else if (handlepath.equals(ReadFileFilter.pathHandle(ftpProperties.getTfcSend26m(), true)))
             newName = "TO26M_" + newName;
-        else if (filePath.startsWith(ftpProperties.getTfcSendZj()))
+        else if (handlepath.equals(ReadFileFilter.pathHandle(ftpProperties.getTfcSendZj(), true)))
             newName = "TOZJ_" + newName;
 
         exchange.getMessage().setHeader("newFileName", newName);
