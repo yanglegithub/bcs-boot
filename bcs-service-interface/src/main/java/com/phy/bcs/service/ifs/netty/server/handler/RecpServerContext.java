@@ -295,7 +295,7 @@ public abstract class RecpServerContext {
         byte[] ipbytes = ParseModeToByte.getIpbyteFromStr(ip);
         String ipstr = "";
         for(int i=0; i<4; i++){
-            ipstr += (i==0?String.valueOf(ipbytes[i]):("."+String.valueOf(ipbytes[i])));
+            ipstr += (i==0?String.valueOf(ipbytes[i]):("."+String.valueOf(0x000000FF & ipbytes[i])));
         }
         return ipstr;
     }

@@ -21,6 +21,8 @@ public class FtpSendRoute extends RouteBuilder {
     private FtpProperties ftpProperties;
     @Autowired
     private FtpSendProcessor ftpSendProcessor;
+    @Autowired
+    private FtpSendFepProcessor ftpSendFepProcessor;
 
     private IdempotentRepository sendIdempotentRepository;
 
@@ -60,11 +62,16 @@ public class FtpSendRoute extends RouteBuilder {
         sendIdempotentRepository = MemoryIdempotentRepository.memoryIdempotentRepository(10000);
         getContext().getRegistry().bind("sendIdempotentRepository", sendIdempotentRepository);
 
-        String fromLocalPathInfo = "file:" + localDir + "?delay=" + delay + "&charset=" + localCharset +
+        String fromLocalPathInfo = "file:" + localDir+ "/FTP" + "?delay=" + delay + "&charset=" + localCharset +
             "&move=" + localBakDir + "&readLockCheckInterval=1000" +
             "&idempotent=true&idempotentRepository=#bean:sendIdempotentRepository" +
             "&idempotentKey=${file:name}" +
             "&readLock=idempotent&readLockRemoveOnCommit=false";
+        String fromLocalPathInfo_FEP = "file:" + localDir+ "/OTHER" + "?delay=" + delay + "&charset=" + localCharset +
+                "&move=" + localBakDir + "&readLockCheckInterval=1000" +
+                "&idempotent=true&idempotentRepository=#bean:sendIdempotentRepository" +
+                "&idempotentKey=${file:name}" +
+                "&readLock=idempotent&readLockRemoveOnCommit=false";
 
         if (StringUtils.isNotEmpty(filePattern)) {
             fromLocalPathInfo += "&include=" + filePattern;
@@ -74,6 +81,10 @@ public class FtpSendRoute extends RouteBuilder {
             .process(ftpSendProcessor)
              .toD("ftp://"+host+":"+port+"/${in.header.nextUri}?username="+username+"&password="+password+"&fileName=${in.header.newFileName}")
             .log(LoggingLevel.INFO, logger, "Sender Process file ${file:name} complete.");
+        //发送流水线
+        from(fromLocalPathInfo_FEP)
+                .process(ftpSendFepProcessor)
+                .log(LoggingLevel.INFO, logger, "Sender Process file ${file:name} complete.");
 
         logger.debug("发送流水线已启动");
     }

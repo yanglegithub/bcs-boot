@@ -1,8 +1,10 @@
 package com.phy.bcs.service.ifs.netty.server.handler.zj;
 
+import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.ifs.config.Constants;
 import com.phy.bcs.service.ifs.controller.model.SendFEPMode;
+import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import com.phy.bcs.service.ifs.netty.client.FepTcpClient;
 import com.phy.bcs.service.ifs.netty.client.RecpClient;
 import com.phy.bcs.service.ifs.netty.client.handler.RecpClientHandler;
@@ -23,7 +25,7 @@ public class ZjRecpServerContext extends RecpServerContext {
         if(syscode == Constants.ZJ_SYSTEM){
             String filename = fep.getFileName().trim();
             String mid = filename.split("_")[1];
-            int code = getConfig().getSystemCodeByMid(Integer.parseInt(mid));
+            int code = getConfig().getSystemCodeByMid(Integer.parseInt(mid, 16));
             return code!=-1?code:(Constants.TFC_SYSTEM);
         }else if(syscode == Constants.FFO_SYSTEM) {
             return Constants.ZJ_SYSTEM;
@@ -35,31 +37,21 @@ public class ZjRecpServerContext extends RecpServerContext {
     public String protoTransfor(ChannelHandlerContext ctx, SendFEPMode fep) {
         int code = sysTransfor(ctx, fep);
         if(code == Constants.TFC_SYSTEM)
-            return "FEP";
+            return "FTP";
         else
             return "RECP";
     }
 
     @Override
     public void filesend(InfFileStatus file) {
+        FtpProperties ftpPro = SpringContextHolder.getBean(FtpProperties.class);
         List<InfFileStatus> files = new ArrayList<>();
         files.add(file);
         if (file.getToSystem() == Constants.TFC_SYSTEM) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true){
-                        FepTcpClient client = new FepTcpClient();
-                        try {
-                            client.connect(getConfig().getTfcSystem().getIp(), getConfig().getTfcSystem().getFepPort(), files);
-                            break;
-                        } catch (Exception e) {
-                            log.debug("---中继控制中心FEP连接五型控制系统失败---");
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }).start();
+            String path = ftpPro.getSendLocalDir() + "/FTP";
+            String newName = "TO5X_" + file.getFileName();
+            file.setPath(path);
+            file.saveFileInNewname(newName);
         } else {
             new Thread(new Runnable() {
                 @Override

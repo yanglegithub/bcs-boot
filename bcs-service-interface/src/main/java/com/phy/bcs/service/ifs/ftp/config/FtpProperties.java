@@ -53,4 +53,14 @@ public class FtpProperties extends GenericKeyedObjectPoolConfig {
     private boolean readerScannerEnable = false;
     private boolean senderScannerEnable = false;
 
+
+    private String hzjSend;
+    private String internalSendHzj;
+    private String tfcSend26s;
+    private String tfcSend26m;
+    private String tfcSendZj;
+    private String hzjRead;
+    private String tfcRead;
+    private String ffocRead;
+
 }

@@ -64,7 +64,7 @@ public class ManagerPdxpUdpServerHandler extends SimpleChannelInboundHandler<Dat
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    int tocode = config.getSystemCodeByMid(NumberUtil.byte2ToUnsignedShort(msg.getMid()));
+                    int tocode = config.getSystemCodeByMid(NumberUtil.byte2ToUnsignedShort(msg.getMid(), 16));
                     tocode = tocode == -1?Constants.TFC_SYSTEM:tocode;
                     String toip = "";
                     int toport = 0;

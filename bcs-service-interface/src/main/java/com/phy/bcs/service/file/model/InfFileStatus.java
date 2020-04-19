@@ -160,21 +160,21 @@ public class InfFileStatus extends BaseModel {
         return false;
     }
 
-    public static boolean saveFileInNewname(InfFileStatus fileStatus, String newFileName){
+    public boolean saveFileInNewname(String newFileName){
         boolean issuccess = true;
-        File dirpath = new File(fileStatus.getPath());
+        File dirpath = new File(path);
         if(!dirpath.exists())
             FileUtils.mkdirs(dirpath);
-        File binFile = new File(fileStatus.getPath()+"/"+newFileName==null?fileStatus.getFileName():newFileName);
+        File binFile = new File(path+"/"+(newFileName==null?fileName:newFileName));
         FileOutputStream out = null;
         try {
             if (!binFile.exists())
                 binFile.createNewFile();
              out = new FileOutputStream(binFile);
-             out.write(fileStatus.getFileContent()==null?new byte[0]:fileStatus.getFileContent());
+             out.write(fileContent==null?new byte[0]:fileContent);
         }catch (IOException e){
             issuccess = false;
-            log.debug("文件id:{},name:{},创建失败",fileStatus.getId(), fileStatus.getFileName());
+            log.debug("文件id:{},name:{},创建失败",id, fileName);
         }finally {
             if(out!=null) {
                 try {

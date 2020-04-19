@@ -112,31 +112,16 @@ public class FtpReadRoute extends RouteBuilder {
         //添加文件名匹配规则
         if (StringUtils.isNotEmpty(filePattern)) {
             ftpConfig += "&include=" + filePattern;
-            fromLocalPathInfo += "&include=" + filePattern;
+            //fromLocalPathInfo += "&include=" + filePattern;
             fromHZJLocalPathInfo += "&include=" + filePattern;
             fromInternalLocalPathInfo += "&include=" + filePattern;
         }
 
         //读取FTP到本地
         from(fromFtpServerInfo + ftpConfig)
-                .process(new Processor() {
-                    @Override
-                    public void process(Exchange exchange) throws Exception {
-                        GenericFileMessage<RandomAccessFile> inFileMessage = (GenericFileMessage<RandomAccessFile>) exchange.getIn();
-                        GenericFile file = inFileMessage.getGenericFile();
-                        String filepath = file.getAbsoluteFilePath();
-                        String filename = file.getFileName();
-                        String local = localTempFilePath;
-                        if (filepath.startsWith("HZJ/FROMHZJ"))
-                            local += local.endsWith("/") ? "HZJ/" : "/HZJ";
-                        else if (filepath.startsWith("INTERNAL/FROMINTERNAL"))
-                            local += local.endsWith("/") ? "INTERNAL/" : "/INTERNAL/";
-                        exchange.getMessage().setHeader("nextUri", local);
-                        exchange.getMessage().setHeader("newFileName", filename.substring(filename.lastIndexOf('/') + 1));
-                        //exchange.getMessage().setHeader("nextUri", );
-                    }
-                })
-                .toD("file:${header.nextUri}?fileName=${header.newFileName}")
+                .log(LoggingLevel.DEBUG, logger, "FTPREADER:read file or directory")
+                .process(ftpReadProcessor)
+                .toD("file:"+ localTempFilePath+"?fileName=${header.newFileName}")
                 .log(LoggingLevel.INFO, logger, "Reader retrieve ftp file ${file:name} complete.");
         //读取HZJ发送的文件
         /*from(fromFtpServerInfo+"/HZJ/FROMHZJ"+ftpConfig)
@@ -148,12 +133,26 @@ public class FtpReadRoute extends RouteBuilder {
                 .log(LoggingLevel.INFO, logger, "Reader retrieve ftp file ${file:name} complete.");*/
 
         //处理本地收到的文件
-        /*from(fromLocalPathInfo)
-                .process(ftpReadProcessor)
-                .toD("file:" + localSendDir + "?filename={in.heard.newFileName}")
-                .log(LoggingLevel.INFO, logger, "Reader Process file ${file:name} complete.");*/
+        from(fromLocalPathInfo)
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
+                        GenericFileMessage<RandomAccessFile> inFileMessage = (GenericFileMessage<RandomAccessFile>) exchange.getIn();
+                        GenericFile file = inFileMessage.getGenericFile();
+
+                        String fileName = file.getFileName();
+                        String filePath = file.getAbsoluteFilePath();
+                        String sendpath = "OTHER";
+                        if(fileName.startsWith("TOHZJ") || fileName.startsWith("TO5X")|| fileName.startsWith("TO54")){
+                            sendpath = "FTP";
+                        }
+                        exchange.getMessage().setHeader("sendpath", sendpath);
+                    }
+                })
+                .toD("file:" + localSendDir + "/${header.sendpath}")
+                .log(LoggingLevel.INFO, logger, "Reader Process file ${file:name} complete.");
         //处理本地收到的HZJ文件
-        from(fromHZJLocalPathInfo)
+        /*from(fromHZJLocalPathInfo)
                 .process(ftpReadProcessor)
                 .toD("file:" + localSendDir + "?fileName=${in.header.newFileName}")
                 .log(LoggingLevel.INFO, logger, "Reader Process file ${file:name} complete.");
@@ -161,7 +160,7 @@ public class FtpReadRoute extends RouteBuilder {
         from(fromInternalLocalPathInfo)
                 .process(ftpReadProcessor)
                 .toD("file:" + localSendDir + "?fileName=${in.header.newFileName}")
-                .log(LoggingLevel.INFO, logger, "Reader Process file ${file:name} complete.");
+                .log(LoggingLevel.INFO, logger, "Reader Process file ${file:name} complete.");*/
 
         logger.debug("读取流水线已启动");
     }

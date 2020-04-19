@@ -124,7 +124,7 @@ public class ParseUtil {
 
     public static byte[] getBytes(byte[] src, int off, int length){
         byte[] r = new byte[length];
-        for(int i = off; i < length; i++){
+        for(int i = off; i < length + off; i++){
             r[i-off] = src[i];
         }
         return r;

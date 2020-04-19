@@ -1,8 +1,10 @@
 package com.phy.bcs.service.ifs.netty.server.handler.site26;
 
+import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.ifs.config.Constants;
 import com.phy.bcs.service.ifs.controller.model.SendFEPMode;
+import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import com.phy.bcs.service.ifs.netty.client.RecpClient;
 import com.phy.bcs.service.ifs.netty.client.handler.RecpClientHandler;
 import com.phy.bcs.service.ifs.netty.server.handler.RecpServerContext;
@@ -20,7 +22,7 @@ public class SiteRecpServerContext extends RecpServerContext {
         if(syscode == Constants.TSS_SYSTEM){
             String filename = fep.getFileName().trim();
             String mid = filename.split("_")[1];
-            int code = getConfig().getSystemCodeByMid(Integer.parseInt(mid));
+            int code = getConfig().getSystemCodeByMid(Integer.parseInt(mid, 16));
             return code!=-1?code:(Constants.TFC_SYSTEM);
         }else if(syscode == Constants.FFO_SYSTEM) {
             return Constants.TSS_SYSTEM;
@@ -30,11 +32,14 @@ public class SiteRecpServerContext extends RecpServerContext {
 
     @Override
     public String protoTransfor(ChannelHandlerContext ctx, SendFEPMode fep) {
+        if(sysTransfor(ctx,fep) == Constants.TFC_SYSTEM)
+            return "FTP";
         return "RECP";
     }
 
     @Override
     public void filesend(InfFileStatus file) {
+        FtpProperties ftpProperties = SpringContextHolder.getBean(FtpProperties.class);
         List<InfFileStatus> files = new ArrayList<>();
         files.add(file);
         new Thread(new Runnable() {
@@ -47,8 +52,11 @@ public class SiteRecpServerContext extends RecpServerContext {
                     port = getConfig().getTssSystem().getFepPort();
                 }
                 else if(file.getToSystem() == Constants.TFC_SYSTEM) {
-                    ip = getConfig().getTfcSystem().getIp();
-                    port = getConfig().getTfcSystem().getFepPort();
+                    String newFileName = "TO5X_" + file.getFileName().trim();
+                    String path = ftpProperties.getSendLocalDir() + "/FTP";
+                    file.setPath(path);
+                    file.saveFileInNewname(newFileName);
+                    return;
                 }
                 else if(file.getToSystem() == Constants.FFO_SYSTEM) {
                     ip = getConfig().getFfocSystem().getIp();

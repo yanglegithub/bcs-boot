@@ -7,9 +7,12 @@ logging:
   level:
     com.phy.bcs.service.ifs: debug
 
+camel:
+  springboot:
+    main-run-controller: true
 fileprocess:
   ftp:
-    host: 172.16.2.251
+    host: localhost
     port: 21
     username: dev
     password: 123456
@@ -26,6 +29,22 @@ fileprocess:
     send-file-pattern: '^.*_.*_.*_.*'
     #read-file-pattern: '.*(_MPSS_JB17){1}.*'
     read-file-pattern: '^.*_.*_.*'
+    #航侦局向内部发送的文件夹
+    hzj-send: "HZJ/FROMHZJ/"
+    #航侦局读取的文件夹
+    hzj-read: "HZJ/TOHZJ/"
+    #内部向航侦局发送的文件夹
+    internal-send-hzj: "INTERNAL/FROMINTERNAL/HZJ/"
+    #五型向26站网发送的文件夹
+    tfc-send-26s: "INTERNAL/FROMINTERNAL/26S/"
+    #五型向26长管发送的文件夹
+    tfc-send-26m: "INTERNAL/FROMINTERNAL/26M/"
+    #五型向中继中心发送的文件夹
+    tfc-send-zj: "INTERNAL/FROMINTERNAL/ZJ/"
+    #五型读取的文件夹
+    tfc-read: "INTERNAL/TO5X/"
+    #54读取的文件夹
+    ffoc-read: "INTERNAL/TO54/"
 
 
 net-application:
@@ -48,28 +67,28 @@ net-application:
   #超时时间（秒）
   timeout: 30
   #包大小（字节数）
-  packgesize: 4096
+  packgesize: 1024
   #五型IP与端口号配置
   tfc-system:
-    ip: 10.11.11.161
-    udf-port: 57197
-    fep-port: 57197
-    pdxp-port: 57197
+    ip: 172.0.0.1
+    udf-port: 10003
+    fep-port: 10003
+    pdxp-port: 10003
   #54控制系统IP与端口号配置
   ffoc-system:
-    ip: 10.11.11.161
+    ip: 172.0.0.1
     udf-port: 10001
     fep-port: 10001
     pdxp-port: 10001
   #26站网IP与端口号配置
   tss-system:
-    ip: 10.11.11.161
+    ip: 127.0.0.1
     udf-port: 10004
     fep-port: 10004
     pdxp-port: 10004
   #航侦局IP与端口号配置
   hzj-system:
-    ip: 10.11.11.161
+    ip: 172.0.0.1
     udf-port: 12301
     fep-port: 12302
     pdxp-port: 12303
@@ -81,7 +100,7 @@ net-application:
     pdxp-port: 10002
   #中继中心IP与端口号配置
   zj-system:
-    ip: 10.11.11.161
+    ip: 172.0.0.1
     udf-port: 10005
     fep-port: 10005
     pdxp-port: 10005

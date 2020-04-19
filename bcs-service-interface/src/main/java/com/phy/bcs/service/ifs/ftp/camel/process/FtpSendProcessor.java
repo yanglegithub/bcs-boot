@@ -1,11 +1,13 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
+import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.file.GenericFile;
 import org.apache.camel.component.file.GenericFileMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import java.util.Map;
 public class FtpSendProcessor implements Processor {
     private static final Logger logger = LoggerFactory.getLogger(FtpSendProcessor.class);
 
+    @Autowired
+    private FtpProperties ftpProperties;
     /**
      * 文件发送的处理逻辑
      * @param exchange
@@ -39,13 +43,13 @@ public class FtpSendProcessor implements Processor {
         }
         String flag = fileName.split("_")[0];
         if ("TOHZJ".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", "HZJ/TOHZJ/");
+            exchange.getMessage().getHeaders().put("nextUri", ftpProperties.getHzjRead());
             exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
         } else if ("TO5X".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", "INTERNAL/TO5X/");
+            exchange.getMessage().getHeaders().put("nextUri", ftpProperties.getTfcRead());
             exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
         } else if ("TO54".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", "INTERNAL/TO54/");
+            exchange.getMessage().getHeaders().put("nextUri", ftpProperties.getFfocRead());
             exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
         }
     }

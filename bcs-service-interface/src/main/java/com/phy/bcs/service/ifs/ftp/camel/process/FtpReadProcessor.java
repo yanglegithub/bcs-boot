@@ -1,6 +1,7 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
+import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.file.GenericFile;
@@ -22,6 +23,8 @@ public class FtpReadProcessor implements Processor {
 
     @Autowired
     private BcsApplicationConfig config;
+    @Autowired
+    private FtpProperties ftpProperties;
 
     /**
      * 文件读取到本地后的处理逻辑
@@ -35,13 +38,12 @@ public class FtpReadProcessor implements Processor {
         String fileName = file.getFileName();
         String filePath = file.getAbsoluteFilePath();
         logger.debug("收到文件，文件名称: " + fileName);
-        File localFile = new File(filePath);
 
         //文件转发
-        Map<String, Object> map = exchange.getMessage().getHeaders();
-        if("HZJ".equals(localFile.getParentFile().getName())){
-            String midstr = fileName.split("_")[1];
-            int mid = Integer.parseInt(midstr);
+        String newName = fileName.substring(fileName.lastIndexOf('/') + 1);
+        if (filePath.startsWith(ftpProperties.getHzjSend())) {
+            String midstr = fileName.split("_")[2];
+            int mid = Integer.parseInt(midstr, 16);
             boolean isWss = false;
             for (int m : config.getWsmids()){
                 isWss = m==mid?true:false;
@@ -49,12 +51,21 @@ public class FtpReadProcessor implements Processor {
                     break;
             }
             if(isWss)
-                map.put("newFileName", "TO54_"+fileName);
+                newName = "TO54_" + newName;
             else
-                map.put("newFileName", "TO5X_"+fileName);
-        } else if("INTERNAL".equals(localFile.getParentFile().getName())){
-            map.put("newFileName", "TOHZJ_"+fileName);
+                newName = "TO5X_" +  newName;
         }
+        else if (filePath.startsWith(ftpProperties.getInternalSendHzj())) {
+            newName = "TOHZJ_" + newName;
+        }
+        else if (filePath.startsWith(ftpProperties.getTfcSend26s()))
+            newName = "TO26S_" + newName;
+        else if (filePath.startsWith(ftpProperties.getTfcSend26m()))
+            newName = "TO26M_" + newName;
+        else if (filePath.startsWith(ftpProperties.getTfcSendZj()))
+            newName = "TOZJ_" + newName;
+
+        exchange.getMessage().setHeader("newFileName", newName);
     }
 
     public static void main(String[] args) {
