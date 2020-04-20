@@ -5,7 +5,7 @@ public class Constants {
     public static Integer TFC_SYSTEM = 0;
     //54
     public static Integer FFO_SYSTEM = 1;
-    //航侦局
+    //HZJ
     public static Integer HZJ_SYSTEM = 2;
     //中继
     public static Integer ZJ_SYSTEM = 3;

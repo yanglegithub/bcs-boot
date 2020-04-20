@@ -15,7 +15,7 @@ fileprocess:
     port: 21
     username: dev
     password: 123456
-    scan-delay: 1000
+    scan-delay: 500
     readerCharset: "GBK"
     senderCharset: "GBK"
     reader-scanner-enable: true
@@ -28,11 +28,11 @@ fileprocess:
     send-file-pattern: '^.*_.*_.*_.*'
     #read-file-pattern: '.*(_MPSS_JB17){1}.*'
     read-file-pattern: '^.*_.*_.*'
-    #航侦局向内部发送的文件夹
+    #HZJ向内部发送的文件夹
     hzj-send: "/HZJ/FROMHZJ/"
-    #航侦局读取的文件夹
+    #HZJ读取的文件夹
     hzj-read: "/HZJ/TOHZJ/"
-    #内部向航侦局发送的文件夹
+    #内部向HZJ发送的文件夹
     internal-send-hzj: "/INTERNAL/FROMINTERNAL/HZJ/"
     #五型向26站网发送的文件夹
     tfc-send-26s: "/INTERNAL/FROMINTERNAL/26S/"
@@ -44,6 +44,7 @@ fileprocess:
     tfc-read: "/INTERNAL/TO5X/"
     #54读取的文件夹
     ffoc-read: "/INTERNAL/TO54/"
+    passive-mode: true
 
 
 net-application:
@@ -75,7 +76,7 @@ net-application:
     pdxp-port: 10003
   #54控制系统IP与端口号配置
   ffoc-system:
-    ip: 172.0.0.1
+    ip: 127.0.0.1
     udf-port: 10001
     fep-port: 10001
     pdxp-port: 10001
@@ -85,7 +86,7 @@ net-application:
     udf-port: 10004
     fep-port: 10004
     pdxp-port: 10004
-  #航侦局IP与端口号配置
+  #HZJ IP与端口号配置
   hzj-system:
     ip: 172.0.0.1
     udf-port: 12301
@@ -93,13 +94,13 @@ net-application:
     pdxp-port: 12303
   #26长管IP与端口号配置
   tsm-system:
-    ip: 10.11.11.161
+    ip: 127.0.0.1
     udf-port: 10002
     fep-port: 10002
     pdxp-port: 10002
   #中继中心IP与端口号配置
   zj-system:
-    ip: 172.0.0.1
+    ip: 10.11.11.161
     udf-port: 10005
     fep-port: 10005
     pdxp-port: 10005

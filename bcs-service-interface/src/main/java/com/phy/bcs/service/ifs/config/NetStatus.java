@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NetStatus {
 
-    //航侦局网络状态记录
+    //HZJ网络状态记录
     private static byte[] HZJnetstatus;
     //五型任务控制状态记录
     private static byte[] TFCnetstatus;

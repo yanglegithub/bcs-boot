@@ -6,6 +6,7 @@ import com.phy.bcs.service.ifs.config.NetStatus;
 import com.phy.bcs.service.ifs.netty.client.UdfClient;
 import com.phy.bcs.service.ifs.netty.client.UdfUdpClient;
 import com.phy.bcs.service.ifs.netty.codec.udf.UdfMessage;
+import com.phy.bcs.service.ifs.netty.utils.NumberUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -15,11 +16,11 @@ public class HZJUdfServerHander extends SimpleChannelInboundHandler<UdfMessage> 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, UdfMessage udfMessage) throws Exception {
         BcsApplicationConfig config  = SpringContextHolder.getBean(BcsApplicationConfig.class);
-        int mid = new BigInteger(udfMessage.getMid()).intValue();
+        String mid = String.valueOf(NumberUtil.byte2ToUnsignedShort(udfMessage.getMid()));
         boolean isFFOC = false;
-        int[] sites = config.getWsmids();
+        String[] sites = config.getWsmids();
         for (int i=0; i< sites.length; i++){
-            if (mid == sites[i]){
+            if (mid.equals(sites[i])){
                 isFFOC = true;
                 break;
             }

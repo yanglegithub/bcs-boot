@@ -16,8 +16,8 @@ public class BcsApplicationConfig {
         private int fepPort;
 
     }
-    private int[] wsmids;
-    private int[] wxmids;
+    private String[] wsmids;
+    private String[] wxmids;
     private int netstatustimes;
     private int reconnectTimes;
     private int timeout;
@@ -79,15 +79,15 @@ public class BcsApplicationConfig {
      * @param mid
      * @return
      */
-    public int getSystemCodeByMid(int mid){
-        int[] mids = wsmids;
-        for (int i : mids){
-            if(i == mid)
+    public int getSystemCodeByMid(String mid){
+        String[] mids = wsmids;
+        for (String i : mids){
+            if(i.equals(mid))
                 return Constants.FFO_SYSTEM;
         }
         mids = wxmids;
-        for (int i : mids){
-            if(i == mid)
+        for (String i : mids){
+            if(i.equals(mid))
                 return Constants.TFC_SYSTEM;
         }
         return -1;

@@ -45,10 +45,9 @@ public class FtpReadProcessor implements Processor {
         String handlepath = ReadFileFilter.pathHandle(filePath, false);
         if (handlepath.equals(ReadFileFilter.pathHandle(ftpProperties.getHzjSend(), true))) {
             String midstr = fileName.split("_")[2];
-            int mid = Integer.parseInt(midstr, 16);
             boolean isWss = false;
-            for (int m : config.getWsmids()){
-                isWss = m==mid?true:false;
+            for (String m : config.getWsmids()){
+                isWss = m.equals(midstr)?true:false;
                 if (isWss)
                     break;
             }

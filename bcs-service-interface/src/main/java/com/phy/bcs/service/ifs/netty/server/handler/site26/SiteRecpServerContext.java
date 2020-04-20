@@ -22,7 +22,7 @@ public class SiteRecpServerContext extends RecpServerContext {
         if(syscode == Constants.TSS_SYSTEM){
             String filename = fep.getFileName().trim();
             String mid = filename.split("_")[1];
-            int code = getConfig().getSystemCodeByMid(Integer.parseInt(mid, 16));
+            int code = getConfig().getSystemCodeByMid(mid);
             return code!=-1?code:(Constants.TFC_SYSTEM);
         }else if(syscode == Constants.FFO_SYSTEM) {
             return Constants.TSS_SYSTEM;

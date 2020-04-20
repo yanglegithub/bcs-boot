@@ -1,16 +1,21 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
 import com.phy.bcs.common.util.StringUtils;
+import com.phy.bcs.service.ifs.ftp.camel.custom.CustomFtpClient;
 import com.phy.bcs.service.ifs.ftp.camel.util.FileUtils;
 import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spi.IdempotentRepository;
 import org.apache.camel.support.processor.idempotent.MemoryIdempotentRepository;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 public class FtpSendRoute extends RouteBuilder {
@@ -60,15 +65,22 @@ public class FtpSendRoute extends RouteBuilder {
         String localCharset = ftpProperties.getSenderCharset();
 
         sendIdempotentRepository = MemoryIdempotentRepository.memoryIdempotentRepository(10000);
+        CustomFtpClient ftpClient = new CustomFtpClient(sendIdempotentRepository);
+        try {
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         getContext().getRegistry().bind("sendIdempotentRepository", sendIdempotentRepository);
+        getContext().getRegistry().bind("customFtpClient", ftpClient);
 
         String fromLocalPathInfo = "file:" + localDir+ "/FTP" + "?delay=" + delay + "&charset=" + localCharset +
-            "&move=" + localBakDir + "&readLockCheckInterval=1000" +
+            "&move=" + "../" + localBakDir + "&readLockCheckInterval=1000" +
             "&idempotent=true&idempotentRepository=#bean:sendIdempotentRepository" +
             "&idempotentKey=${file:name}" +
             "&readLock=idempotent&readLockRemoveOnCommit=false";
         String fromLocalPathInfo_FEP = "file:" + localDir+ "/OTHER" + "?delay=" + delay + "&charset=" + localCharset +
-                "&move=" + localBakDir + "&readLockCheckInterval=1000" +
+                "&move=" + "../" + localBakDir + "&readLockCheckInterval=1000" +
                 "&idempotent=true&idempotentRepository=#bean:sendIdempotentRepository" +
                 "&idempotentKey=${file:name}" +
                 "&readLock=idempotent&readLockRemoveOnCommit=false";
@@ -79,7 +91,9 @@ public class FtpSendRoute extends RouteBuilder {
         //发送流水线
         from(fromLocalPathInfo)
             .process(ftpSendProcessor)
-             .toD("ftp://"+host+":"+port+"/${in.header.nextUri}?username="+username+"&password="+password+"&fileName=${in.header.newFileName}")
+             .toD("ftp://"+host+":"+port+"/${in.header.nextUri}?username="+username+"&password="+password+"&fileName=${in.header.newFileName}" +
+                     "&ftpClient.controlEncoding=" + localCharset + "&charset=" + localCharset +
+                     "&binary=true&passiveMode="+ftpProperties.isPassiveMode())
             .log(LoggingLevel.INFO, logger, "Sender Process file ${file:name} complete.");
         //发送流水线
         from(fromLocalPathInfo_FEP)
