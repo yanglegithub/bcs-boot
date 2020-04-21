@@ -1,6 +1,7 @@
 package com.phy.bcs.service.ifs.ftp.camel.process;
 
 import com.phy.bcs.service.ifs.ftp.camel.filter.ReadFileFilter;
+import com.phy.bcs.service.ifs.ftp.camel.util.FtpTool;
 import com.phy.bcs.service.ifs.ftp.config.FtpProperties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -12,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +24,7 @@ public class FtpSendProcessor implements Processor {
 
     @Autowired
     private FtpProperties ftpProperties;
+    private Map<String, FtpTool> ftpmap = new HashMap<>();
     /**
      * 文件发送的处理逻辑
      * @param exchange
@@ -37,34 +38,84 @@ public class FtpSendProcessor implements Processor {
         String filePath = file.getAbsoluteFilePath();
         logger.debug("fileName: " + fileName + "; filePath: " + filePath);
         File diskFile = new File(filePath);
-        boolean sendResult = sendFile(diskFile);
-        if (!sendResult) {
-            //logger.error("文件发送失败！");
-            //throw new RuntimeMsgException("文件发送失败！" + fileName);
+        if (!diskFile.exists()) {
+            logger.error("文件不存在，无法发送");
         }
         String flag = fileName.split("_")[0];
         if ("TOHZJ".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", ReadFileFilter.pathHandle(ftpProperties.getHzjRead(), true));
-            exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
+            String servername = fileName.split("_")[2];
+            FtpProperties.Ftpserver server = ftpProperties.findByServername(servername);
+            /*exchange.getMessage().getHeaders().put("username", server.getUsername());
+            exchange.getMessage().getHeaders().put("password", server.getPassword());
+            exchange.getMessage().getHeaders().put("host", server.getHost());
+            exchange.getMessage().getHeaders().put("port", server.getPort());
+            exchange.getMessage().getHeaders().put("path", ReadFileFilter.pathHandle(ftpProperties.getHzjRead(), true));
+            exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));*/
+            sendFile(diskFile,
+                    fileName.replaceFirst(flag + "_", ""),
+                    ReadFileFilter.pathHandle(ftpProperties.getHzjRead(), true),
+                    server);
         } else if ("TO5X".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", ReadFileFilter.pathHandle(ftpProperties.getTfcRead(), true));
-            exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
+            FtpProperties.Ftpserver server = ftpProperties.getTfcFtpserver();
+            /*exchange.getMessage().getHeaders().put("username", server.getUsername());
+            exchange.getMessage().getHeaders().put("password", server.getPassword());
+            exchange.getMessage().getHeaders().put("host", server.getHost());
+            exchange.getMessage().getHeaders().put("port", server.getPort());
+            exchange.getMessage().getHeaders().put("path", ReadFileFilter.pathHandle(ftpProperties.getTfcRead(), true));
+            exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));*/
+            sendFile(diskFile,
+                    fileName.replaceFirst(flag + "_", ""),
+                    ReadFileFilter.pathHandle(ftpProperties.getTfcRead(), true),
+                    server);
         } else if ("TO54".equals(flag)) {
-            exchange.getMessage().getHeaders().put("nextUri", ReadFileFilter.pathHandle(ftpProperties.getFfocRead(), true));
-            exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));
+            FtpProperties.Ftpserver server = ftpProperties.getFfocFtpserver();
+            /*exchange.getMessage().getHeaders().put("username", server.getUsername());
+            exchange.getMessage().getHeaders().put("password", server.getPassword());
+            exchange.getMessage().getHeaders().put("host", server.getHost());
+            exchange.getMessage().getHeaders().put("port", server.getPort());
+            exchange.getMessage().getHeaders().put("path", ReadFileFilter.pathHandle(ftpProperties.getFfocRead(), true));
+            exchange.getMessage().getHeaders().put("newFileName", fileName.replaceFirst(flag + "_", ""));*/
+            sendFile(diskFile,
+                    fileName.replaceFirst(flag + "_", ""),
+                    ReadFileFilter.pathHandle(ftpProperties.getFfocRead(), true),
+                    server);
         }
     }
 
-    public boolean sendFile(File file) {
+    public boolean sendFile(File file, String newName, String path, FtpProperties.Ftpserver server) {
         if (!file.exists()) {
             logger.error("文件不存在，无法发送");
             return false;
         }
         String fileName = file.getName();
         String[] fileNameSplit = fileName.split("\\.")[0].split("_");
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
+        FtpTool tool = getFtpTool(server);
+        boolean success = tool.uploadFile("/"+path, newName, in);
+        if(in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
 
-        return true;
+    public FtpTool getFtpTool(FtpProperties.Ftpserver config){
+        if(ftpmap.get(config.getServername())==null){
+            FtpTool tool = new FtpTool(config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
+            ftpmap.put(config.getServername(), tool);
+            return tool;
+        }else {
+            return ftpmap.get(config.getServername());
+        }
     }
 
 }

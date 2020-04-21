@@ -15,9 +15,9 @@ fileprocess:
     port: 21
     username: dev
     password: 123456
-    scan-delay: 500
-    readerCharset: "GBK"
-    senderCharset: "GBK"
+    scan-delay: 1000
+    readerCharset: "UTF-8"
+    senderCharset: "UTF-8"
     reader-scanner-enable: true
     sender-scanner-enable: true
     send-local-dir: "./.ftp-send/"
@@ -45,6 +45,48 @@ fileprocess:
     #54读取的文件夹
     ffoc-read: "/INTERNAL/TO54/"
     passive-mode: true
+    hzj-ftpserver1:
+      servername: ftpserver1
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
+    hzj-ftpserver2:
+      servername: ftpserver2
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
+    hzj-ftpserver3:
+      servername: ftpserver3
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
+    hzj-ftpserver4:
+      servername: ftpserver4
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
+    hzj-ftpserver5:
+      servername: ftpserver4
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
+    tfc-ftpserver:
+      servername: ftcftpserver
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
+    ffoc-ftpserver:
+      servername: ffocftpserver
+      host: 127.0.0.1
+      port: 21
+      username: dev
+      password: 123456
 
 
 net-application:

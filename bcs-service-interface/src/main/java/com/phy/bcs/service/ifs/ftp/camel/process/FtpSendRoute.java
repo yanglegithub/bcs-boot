@@ -91,9 +91,9 @@ public class FtpSendRoute extends RouteBuilder {
         //发送流水线
         from(fromLocalPathInfo)
             .process(ftpSendProcessor)
-             .toD("ftp://"+host+":"+port+"/${in.header.nextUri}?username="+username+"&password="+password+"&fileName=${in.header.newFileName}" +
+             /*.toD("ftp://${header.host}:${header.port}/${header.path}?username=${header.username}&password=${header.password}&fileName=${header.newFileName}" +
                      "&ftpClient.controlEncoding=" + localCharset + "&charset=" + localCharset +
-                     "&binary=true&passiveMode="+ftpProperties.isPassiveMode())
+                     "&binary=true&passiveMode="+ftpProperties.isPassiveMode())*/
             .log(LoggingLevel.INFO, logger, "Sender Process file ${file:name} complete.");
         //发送流水线
         from(fromLocalPathInfo_FEP)

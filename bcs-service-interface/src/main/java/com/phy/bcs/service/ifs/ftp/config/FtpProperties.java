@@ -53,7 +53,7 @@ public class FtpProperties extends GenericKeyedObjectPoolConfig {
     private boolean readerScannerEnable = false;
     private boolean senderScannerEnable = false;
 
-
+    //文件夹映射规则
     private String hzjSend;
     private String internalSendHzj;
     private String tfcSend26s;
@@ -63,4 +63,41 @@ public class FtpProperties extends GenericKeyedObjectPoolConfig {
     private String tfcRead;
     private String ffocRead;
 
+
+    private Ftpserver hzjFtpserver1;
+    private Ftpserver hzjFtpserver2;
+    private Ftpserver hzjFtpserver3;
+    private Ftpserver hzjFtpserver4;
+    private Ftpserver hzjFtpserver5;
+    private Ftpserver tfcFtpserver;
+    private Ftpserver ffocFtpserver;
+
+    @Data
+    public static class Ftpserver{
+        private String servername;
+        private String host;
+        private int port;
+        private String username;
+        private String password;
+    }
+
+    public Ftpserver findByServername(String servername){
+        String name = servername.trim();
+        if(name.equals(hzjFtpserver1.getServername())){
+            return hzjFtpserver1;
+        }else if(name.equals(hzjFtpserver2.getServername())){
+            return hzjFtpserver2;
+        }else if(name.equals(hzjFtpserver3.getServername())){
+            return hzjFtpserver3;
+        }else if(name.equals(hzjFtpserver4.getServername())){
+            return hzjFtpserver4;
+        }else if(name.equals(hzjFtpserver5.getServername())){
+            return hzjFtpserver5;
+        }else if(name.equals(tfcFtpserver.getServername())){
+            return tfcFtpserver;
+        }else if(name.equals(ffocFtpserver.getServername())){
+            return ffocFtpserver;
+        }else
+            return null;
+    }
 }
