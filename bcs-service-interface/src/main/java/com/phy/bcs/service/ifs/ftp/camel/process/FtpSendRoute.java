@@ -66,11 +66,6 @@ public class FtpSendRoute extends RouteBuilder {
 
         sendIdempotentRepository = MemoryIdempotentRepository.memoryIdempotentRepository(10000);
         CustomFtpClient ftpClient = new CustomFtpClient(sendIdempotentRepository);
-        try {
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         getContext().getRegistry().bind("sendIdempotentRepository", sendIdempotentRepository);
         getContext().getRegistry().bind("customFtpClient", ftpClient);
 
