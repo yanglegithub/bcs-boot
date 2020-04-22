@@ -12,10 +12,10 @@ camel:
 fileprocess:
   ftp:
     host: localhost
-    port: 21
+    port: 50000
     username: dev
     password: 123456
-    scan-delay: 1000
+    scan-delay: 5000
     readerCharset: "UTF-8"
     senderCharset: "UTF-8"
     reader-scanner-enable: true
@@ -29,63 +29,63 @@ fileprocess:
     #read-file-pattern: '.*(_MPSS_JB17){1}.*'
     read-file-pattern: '^.*_.*_.*'
     #HZJ向内部发送的文件夹
-    hzj-send: "/HZJ/FROMHZJ/"
+    hzj-send: "/HZJ/"
     #HZJ读取的文件夹
-    hzj-read: "/HZJ/TOHZJ/"
+    hzj-read: "/TEST/"
     #内部向HZJ发送的文件夹
-    internal-send-hzj: "/INTERNAL/FROMINTERNAL/HZJ/"
+    internal-send-hzj: "/INTOHZJ/"
     #五型向26站网发送的文件夹
-    tfc-send-26s: "/INTERNAL/FROMINTERNAL/26S/"
+    tfc-send-26s: "/26S/"
     #五型向26长管发送的文件夹
-    tfc-send-26m: "/INTERNAL/FROMINTERNAL/26M/"
+    tfc-send-26m: "/26M/"
     #五型向中继中心发送的文件夹
-    tfc-send-zj: "/INTERNAL/FROMINTERNAL/ZJ/"
+    tfc-send-zj: "/ZJ/"
     #五型读取的文件夹
-    tfc-read: "/INTERNAL/TO5X/"
+    tfc-read: "/TEST/"
     #54读取的文件夹
-    ffoc-read: "/INTERNAL/TO54/"
+    ffoc-read: "/TEST/"
     passive-mode: true
     hzj-ftpserver1:
       servername: ftpserver1
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: hzj1
       password: 123456
     hzj-ftpserver2:
       servername: ftpserver2
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: hzj2
       password: 123456
     hzj-ftpserver3:
       servername: ftpserver3
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: hzj3
       password: 123456
     hzj-ftpserver4:
       servername: ftpserver4
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: hzj4
       password: 123456
     hzj-ftpserver5:
       servername: ftpserver4
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: hzj5
       password: 123456
     tfc-ftpserver:
       servername: ftcftpserver
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: tfc
       password: 123456
     ffoc-ftpserver:
       servername: ffocftpserver
-      host: 127.0.0.1
+      host: 172.16.5.32
       port: 21
-      username: dev
+      username: ffoc
       password: 123456
 
 
@@ -96,12 +96,18 @@ net-application:
     - 0x04
     - 0x02
     - 0x03
+    - Hux001
+    - Hux-098
+    - Yuhghw
   #对应54的任务号
   wsmids:
     - 0x1001
     - 0x1002
     - 0x1003
     - 0x1004
+    - Jx5-six
+    - Jx449
+    - Hx78-0
   #根据该参数判断当前的网络状态
   netstatustimes: 5
   #重连次数

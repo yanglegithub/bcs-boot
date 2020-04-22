@@ -139,7 +139,7 @@ public class FtpTool {
             if(!initFtpClient())
                 return false;
             ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
-            //CreateDirecroty(pathname);
+            CreateDirecroty(pathname);
             ftpClient.makeDirectory(pathname);
             ftpClient.changeWorkingDirectory(pathname);
             ftpClient.storeFile(fileName, inputStream);

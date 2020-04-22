@@ -109,12 +109,13 @@ public class FtpSendProcessor implements Processor {
     }
 
     public FtpTool getFtpTool(FtpProperties.Ftpserver config){
-        if(ftpmap.get(config.getServername())==null){
+        String id = config.getServername() + "_" + config.getUsername();
+        if(ftpmap.get(id)==null){
             FtpTool tool = new FtpTool(config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
-            ftpmap.put(config.getServername(), tool);
+            ftpmap.put(id, tool);
             return tool;
         }else {
-            return ftpmap.get(config.getServername());
+            return ftpmap.get(id);
         }
     }
 
