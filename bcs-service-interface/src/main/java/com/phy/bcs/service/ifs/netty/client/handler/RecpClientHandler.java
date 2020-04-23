@@ -3,9 +3,12 @@ package com.phy.bcs.service.ifs.netty.client.handler;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
+import com.phy.bcs.service.ifs.config.NetStatus;
 import com.phy.bcs.service.ifs.controller.model.*;
+import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
 import com.phy.bcs.service.ifs.netty.server.handler.FepOverTimeHandler;
+import com.phy.bcs.service.ifs.netty.utils.NumberUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +36,8 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
     private int id;
     //当前文件发送的字节偏移
     private int fileoff = 0;
-
+    //连续超时发送次数
+    private int unconnect_times = 0;
     public RecpClientHandler(InetSocketAddress remoteAdress, List<InfFileStatus> files){
         this.files = files;
         this.remoteAdress = remoteAdress;
@@ -43,8 +47,11 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
 
     @Override
     protected void handleData(ChannelHandlerContext channelHandlerContext, ParseRECP msg) {
-        if(handleIdlePackage(channelHandlerContext, msg))
+        if(handleIdlePackage(channelHandlerContext, msg)) {
+            unconnect_times = 0;
+            setNetStatus(true);
             return;
+        }
         if (step == 0){
             //如果接收到的包不是相应序号的应答包，则舍弃该包
             if(msg.getFlag() != PackageType.ACK)
@@ -112,6 +119,8 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             log.debug("RECP结束包发送成功");
             channelHandlerContext.close();
         }
+        unconnect_times = 0;
+        setNetStatus(true);
     }
 
     @Override
@@ -153,6 +162,19 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
     @Override
     public void handleReaderIdle(ChannelHandlerContext ctx){
         log.debug("读超时，step={}",step);
+        unconnect_times++;
+        setNetStatus(false);
+        if(unconnect_times >= config.getReconnectTimes()){
+            step = 0;
+            seqNum = 1;
+            id = 0;
+            fileoff = 0;
+            unconnect_times = 0;
+            log.debug("超时次数过多，RECP连接断开，RECP重连");
+            recpRequest(ctx);
+            return;
+        }
+
         if(step == 0){
             recpRequest(ctx);
         }else if(step == 1){
@@ -301,4 +323,17 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             sendFepSYN(ctx);
         }
     }
+
+    public void setNetStatus(boolean isConnected){
+        if(remoteAdress.getAddress().getHostAddress().matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")){
+            NetStatus.writeStatus(config.getSyscodeByIp(remoteAdress.getAddress().getHostAddress()), isConnected);
+        }else {
+            String[] ips = remoteAdress.getAddress().getHostAddress().split(":");
+            int h = Integer.parseInt(ips[6], 16);
+            int l = Integer.parseInt(ips[7], 16);
+            String ip = h/256 + "." + h%256 + "." + l/256 + "." + l%256;
+            NetStatus.writeStatus(config.getSyscodeByIp(ip), isConnected);
+        }
+    }
+
 }

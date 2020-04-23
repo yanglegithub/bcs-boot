@@ -99,6 +99,10 @@ public class RecpServerHandler extends FepOverTimeHandler<DatagramPacket>{
             }
             RecpServerContext context = entry.getValue();
             context.handleReaderIdle(ctx);
+            if (context.getUnconnected_times() >= config.getReconnectTimes()){
+                ipcontext.remove(context.getIp());
+                log.debug("ip:{} RECP连接超时,请重新发送RECP连接", context.getIp());
+            }
         }
     }
 

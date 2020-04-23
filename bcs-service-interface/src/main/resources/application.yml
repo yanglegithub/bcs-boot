@@ -31,7 +31,7 @@ fileprocess:
     #HZJ向内部发送的文件夹
     hzj-send: "/HZJ/"
     #HZJ读取的文件夹
-    hzj-read: "/TEST/"
+    hzj-read: "/"
     #内部向HZJ发送的文件夹
     internal-send-hzj: "/INTOHZJ/"
     #五型向26站网发送的文件夹
@@ -41,46 +41,53 @@ fileprocess:
     #五型向中继中心发送的文件夹
     tfc-send-zj: "/ZJ/"
     #五型读取的文件夹
-    tfc-read: "/TEST/"
+    tfc-read: "/"
     #54读取的文件夹
-    ffoc-read: "/TEST/"
+    ffoc-read: "/"
     passive-mode: true
+    #hzj FTP服务1
     hzj-ftpserver1:
       servername: ftpserver1
       host: 172.16.5.32
       port: 21
       username: hzj1
       password: 123456
+    #hzj FTP服务2
     hzj-ftpserver2:
       servername: ftpserver2
       host: 172.16.5.32
       port: 21
       username: hzj2
       password: 123456
+    #hzj FTP服务3
     hzj-ftpserver3:
       servername: ftpserver3
       host: 172.16.5.32
       port: 21
       username: hzj3
       password: 123456
+    #hzj FTP服务4
     hzj-ftpserver4:
       servername: ftpserver4
       host: 172.16.5.32
       port: 21
       username: hzj4
       password: 123456
+    #hzj FTP服务5
     hzj-ftpserver5:
       servername: ftpserver4
       host: 172.16.5.32
       port: 21
       username: hzj5
       password: 123456
+    #五型 FTP服务
     tfc-ftpserver:
       servername: ftcftpserver
       host: 172.16.5.32
       port: 21
       username: tfc
       password: 123456
+    #54系统 FTP服务
     ffoc-ftpserver:
       servername: ffocftpserver
       host: 172.16.5.32
@@ -111,7 +118,7 @@ net-application:
   #根据该参数判断当前的网络状态
   netstatustimes: 5
   #重连次数
-  reconnectTimes: 10
+  reconnectTimes: 5
   #超时时间（秒）
   timeout: 30
   #包大小（字节数）

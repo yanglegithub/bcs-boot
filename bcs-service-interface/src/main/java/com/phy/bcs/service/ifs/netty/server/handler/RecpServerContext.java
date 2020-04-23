@@ -4,6 +4,7 @@ import com.phy.bcs.common.util.StringUtils;
 import com.phy.bcs.common.util.spring.SpringContextHolder;
 import com.phy.bcs.service.file.model.InfFileStatus;
 import com.phy.bcs.service.ifs.config.BcsApplicationConfig;
+import com.phy.bcs.service.ifs.config.NetStatus;
 import com.phy.bcs.service.ifs.controller.model.*;
 import com.phy.bcs.service.ifs.controller.server.ParseModeToByte;
 import com.phy.bcs.service.ifs.controller.util.ParseUtil;
@@ -40,6 +41,8 @@ public abstract class RecpServerContext {
     //上一次与传送这个文件的时间
     private long timestramp = new Date().getTime();
     private ParseRECP recpmode;
+    //连接超时重发包的次数
+    private int unconnected_times = 0;
 
     public RecpServerContext(){
         //service = SpringContextHolder.getBean(InfFileStatusService.class);
@@ -64,8 +67,14 @@ public abstract class RecpServerContext {
             return;
         }
 
-        if(handleIdlePackage(channelHandlerContext, msg))
+        if(handleIdlePackage(channelHandlerContext, msg)) {
+            //连续中断次数,并添加网络状态
+            unconnected_times = 0;
+            String ip = getipv4FromRemoteAdress();
+            int syscode = getConfig().getSyscodeByIp(ip);
+            NetStatus.writeStatus(syscode, true);
             return;
+        }
 
         if(step == 0){
             if(msg.getFlag() != PackageType.SYN)
@@ -113,6 +122,10 @@ public abstract class RecpServerContext {
             seqNum++;
             step = 1;
         }
+        unconnected_times = 0;
+        String ip = getipv4FromRemoteAdress();
+        int syscode = getConfig().getSyscodeByIp(ip);
+        NetStatus.writeStatus(syscode, true);
     }
 
     //处理因为网络问题导致客户端的超时重发的包
@@ -143,6 +156,12 @@ public abstract class RecpServerContext {
         int sec = config.getTimeout();
         if(new Date().getTime() - timestramp < sec * 1000 || sec == 0)
             return;
+        //连续超时次数+1，并添加网络状态
+        unconnected_times++;
+        String ip = getipv4FromRemoteAdress();
+        int syscode = getConfig().getSyscodeByIp(ip);
+        NetStatus.writeStatus(syscode, false);
+
         log.debug("ip;{} 读超时,现在处于step={}", ip, step);
         if(step == 1){
             if(seqNum == 1) {

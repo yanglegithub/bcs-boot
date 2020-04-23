@@ -14,9 +14,13 @@ public class NetStatus {
     private static byte[] FFOCnetstatus;
     //中继网控中心状态记录
     private static byte[] ZJnetstatus;
+    //26站网中心状态记录
+    private static byte[] TSSnetstatus;
+    //26长管中心状态记录
+    private static byte[] TSMnetstatus;
 
     public static void init(){
-        if(HZJnetstatus==null||TFCnetstatus==null||FFOCnetstatus==null||ZJnetstatus==null){
+        if(HZJnetstatus==null||TFCnetstatus==null||FFOCnetstatus==null||ZJnetstatus==null||TSSnetstatus==null||TSMnetstatus==null){
             BcsApplicationConfig config  = SpringContextHolder.getBean(BcsApplicationConfig.class);
             int timeConfig = config.getNetstatustimes();
             int bytes = 0;
@@ -28,6 +32,8 @@ public class NetStatus {
             TFCnetstatus = TFCnetstatus==null?new byte[bytes]:TFCnetstatus;
             FFOCnetstatus = FFOCnetstatus==null?new byte[bytes]:FFOCnetstatus;
             ZJnetstatus = ZJnetstatus==null?new byte[bytes]:ZJnetstatus;
+            TSSnetstatus = TSSnetstatus==null?new byte[bytes]:TSSnetstatus;
+            TSMnetstatus = TSMnetstatus==null?new byte[bytes]:TSMnetstatus;
         }
     }
 
@@ -45,6 +51,8 @@ public class NetStatus {
             case 1: target = FFOCnetstatus; break;
             case 2: target = HZJnetstatus; break;
             case 3: target = ZJnetstatus; break;
+            case 4: target = TSMnetstatus; break;
+            case 5: target = TSSnetstatus; break;
         }
         if(target == null)
             return -1;
@@ -75,6 +83,8 @@ public class NetStatus {
             case 1: target = FFOCnetstatus; break;
             case 2: target = HZJnetstatus; break;
             case 3: target = ZJnetstatus; break;
+            case 4: target = TSMnetstatus;break;
+            case 5: target = TSSnetstatus;break;
         }
         if(target == null)
             return -2;
