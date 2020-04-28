@@ -90,38 +90,34 @@ public abstract class RecpServerContext {
             log.debug("收到FEP请求包,FEP回应包已发:{}",msg);
             file = generFileStatus(channelHandlerContext, msg.getData());
             sendRecpACK(channelHandlerContext);
-            seqNum++;
+            //seqNum++;
             step = 2;
             sendFepACK(channelHandlerContext);
-        } else if(step == 2){
-            if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
-                return;
-            log.debug("收到FEP请求应答包");
+            seqNum++;
             if(file.getRecFinish() == 1)
                 step = 1;
             else
                 step = 3;
-            seqNum++;
-        } else if(step == 3 || step == 6){
+        }else if(step == 3 || step == 6){
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
             log.debug("收到FEP数据包");
             reciveData(msg.getData());
             sendRecpACK(channelHandlerContext);
             step = 6;
-            seqNum++;
             if(file.getRecFinish() == 1){
                 sendFepFIN(channelHandlerContext);
                 filesend(file);
-                step = 4;
+                step = 1;
             }
-        } else if(step == 4){
+            seqNum++;
+        } /*else if(step == 4){
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
             log.debug("接收结束，结束确认包已发送");
             seqNum++;
             step = 1;
-        }
+        }*/
         unconnected_times = 0;
         String ip = getipv4FromRemoteAdress();
         int syscode = getConfig().getSyscodeByIp(ip);
@@ -135,15 +131,19 @@ public abstract class RecpServerContext {
             sendRecpACK(ctx);
             seqNum++;
             return true;
-        }else if(msg.getFlag() == PackageType.DATA && step == 2 && 1 == msg.getData().getFlag()){
+        }else if(msg.getFlag() == PackageType.DATA && (step == 3 || step == 1)
+                && 1 == msg.getData().getFlag()
+                && msg.getSerialNumber() == seqNum - 1){
             seqNum--;
             sendRecpACK(ctx);
-            seqNum++;
             sendFepACK(ctx);
+            seqNum++;
             return true;
-        }else if(msg.getFlag() == PackageType.DATA && (step == 6 || step == 4) && msg.getSerialNumber() == seqNum - 1){
+        }else if(msg.getFlag() == PackageType.DATA && (step == 6 || step == 1) && msg.getSerialNumber() == seqNum - 1){
             seqNum--;
             sendRecpACK(ctx);
+            if(file.getRecFinish() == 1)
+                sendFepFIN(ctx);
             seqNum++;
             return true;
         }
@@ -168,23 +168,26 @@ public abstract class RecpServerContext {
                 seqNum--;
                 sendRecpACK(ctx);
                 seqNum++;
+            }else {
+                seqNum--;
+                sendRecpACK(ctx);
+                sendFepFIN(ctx);
+                seqNum++;
             }
-        }else if(step == 2){
+        }/*else if(step == 2){
             seqNum--;
             sendRecpACK(ctx);
             seqNum++;
             sendFepACK(ctx);
-        }else if(step == 3){
-            //可能是网络状态不好，让客户端超时
+        }*/else if(step == 3){
+            seqNum--;
+            sendRecpACK(ctx);
+            sendFepACK(ctx);
+            seqNum++;
         }else if(step == 6){
             seqNum--;
             sendRecpACK(ctx);
             seqNum++;
-        }else if(step == 4){
-            seqNum--;
-            sendRecpACK(ctx);
-            seqNum++;
-            sendFepFIN(ctx);
         }
     }
 
@@ -314,7 +317,7 @@ public abstract class RecpServerContext {
         byte[] ipbytes = ParseModeToByte.getIpbyteFromStr(ip);
         String ipstr = "";
         for(int i=0; i<4; i++){
-            ipstr += (i==0?String.valueOf(ipbytes[i]):("."+String.valueOf(0x000000FF & ipbytes[i])));
+            ipstr += (i==0?String.valueOf(0xFF & ipbytes[i]):("."+String.valueOf(0xFF & ipbytes[i])));
         }
         return ipstr;
     }

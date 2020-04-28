@@ -68,25 +68,24 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
                 return;
             log.debug("发送FEP请求包成功");
             step = 2;
-            seqNum++;
+            //seqNum++;
         } else if(step == 2){
             //如果接收到的包不是相应序号的数据包，则舍弃该包
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
             log.debug("接收FEP请求应答包");
-            if(msg.getData().getAnswerFEPMode().getNum() < 0){
-                sendRecpACK(channelHandlerContext);
-                seqNum++;
-                closeOrNext(channelHandlerContext);
-                return;
-            }
-            id = msg.getData().getAnswerFEPMode().getID();
-            fileoff = msg.getData().getAnswerFEPMode().getNum();
-            sendRecpACK(channelHandlerContext);
-            step = 3;
             seqNum++;
-            sendData(channelHandlerContext);
-
+            if(msg.getData().getAnswerFEPMode().getNum() < 0){
+                //sendRecpACK(channelHandlerContext);
+                closeOrNext(channelHandlerContext);
+                //return;
+            }else {
+                id = msg.getData().getAnswerFEPMode().getID();
+                fileoff = msg.getData().getAnswerFEPMode().getNum();
+                //sendRecpACK(channelHandlerContext);
+                step = 3;
+                sendData(channelHandlerContext);
+            }
         } else if(step == 3 || step == 4){
             if(msg.getFlag() != PackageType.ACK || msg.getSerialNumber() != seqNum)
                 return;
@@ -95,22 +94,20 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             if(files.get(fileIndex).getFileContent().length-fileoff < config.getPackgesize()) {
                 fileoff = files.get(fileIndex).getFileContent().length;
                 step = 5;
-                seqNum++;
-                return;
             } else {
+                seqNum++;
                 fileoff += config.getPackgesize();
                 step = 4;
-                seqNum++;
                 sendData(channelHandlerContext);
             }
         } else if(step == 5){
             if(msg.getFlag() != PackageType.DATA || msg.getSerialNumber() != seqNum)
                 return;
-            log.debug("接收到FEP结束确认包");
             ParseFEP fep = msg.getData();
             if(!(fep.getFlag() == 3) || fep.getFinishFEPMode().getID() != id)
                 return;
-            sendRecpACK(channelHandlerContext);
+            log.debug("接收到FEP结束确认包");
+            //sendRecpACK(channelHandlerContext);
             seqNum++;
             closeOrNext(channelHandlerContext);
         } else if(step == 6){
@@ -136,11 +133,13 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
             return true;
         }else if(msg.getFlag() == PackageType.DATA && msg.getSerialNumber() == seqNum-1 && 2 == msg.getData().getFlag()
                 && (step == 1 || step == 3)){
-            seqNum--;
-            sendRecpACK(ctx);
-            seqNum++;
+            //seqNum--;
+            //sendRecpACK(ctx);
+            //seqNum++;
             if(step == 3)
                 sendData(ctx);
+            else
+                sendFepSYN(ctx);
             return true;
         }else if(msg.getFlag() == PackageType.ACK && step == 4 && msg.getSerialNumber() == seqNum - 1){
             sendData(ctx);
@@ -182,9 +181,7 @@ public class RecpClientHandler extends FepOverTimeHandler<ParseRECP> {
         } else if(step == 2){
             //有可能是网络问题，不予处理，让服务端超时？
         } else if(step == 3){
-            seqNum--;
-            sendRecpACK(ctx);
-            seqNum++;
+            //sendRecpACK(ctx);
             sendData(ctx);
         } else if(step == 4){
             sendData(ctx);

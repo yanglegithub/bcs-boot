@@ -67,7 +67,7 @@ public class ParseRECP {
         //只有数据包有数据区
         if(flagInt == 4){
             //剩余n位字节 数据
-            byte[] dataByte = ParseUtil.strChange(bytes, 73, bytes.length);;
+            byte[] dataByte = ParseUtil.strChange(bytes, 17 + abstractLength, bytes.length);;
             data = new ParseFEP(dataByte);//byte[] 转 string
         }else{
             data = null;

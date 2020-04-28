@@ -131,7 +131,7 @@ net-application:
     pdxp-port: 10003
   #54控制系统IP与端口号配置
   ffoc-system:
-    ip: 127.0.0.1
+    ip: 172.16.2.55
     udf-port: 10001
     fep-port: 10001
     pdxp-port: 10001
@@ -155,7 +155,7 @@ net-application:
     pdxp-port: 10002
   #中继中心IP与端口号配置
   zj-system:
-    ip: 10.11.11.161
+    ip: 127.0.0.1
     udf-port: 10005
     fep-port: 10005
     pdxp-port: 10005

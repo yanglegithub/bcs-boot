@@ -69,9 +69,7 @@ public class ParseModeToByte {
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.strToBytes(data.getReservedBits(), 4));
         bytes = ParseUtil.byteMerger(bytes,ParseUtil.intToBytes2(data.getAbstractLength()));
         if(data.getAbstractLength() != 0 ){
-            bytes = ParseUtil.byteMerger(bytes, ParseUtil.strToBytes(data.getAbstractData(), 56));
-        }else{
-            bytes = ParseUtil.byteMerger(bytes, new byte[56]);
+            bytes = ParseUtil.byteMerger(bytes, ParseUtil.strToBytes(data.getAbstractData(), data.getAbstractLength()));
         }
         bytes = data.getData()==null?bytes:ParseUtil.byteMerger(bytes, parseFEPTo(data.getData()));
         return bytes;

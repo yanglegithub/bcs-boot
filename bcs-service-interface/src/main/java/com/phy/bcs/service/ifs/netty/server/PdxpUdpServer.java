@@ -25,6 +25,8 @@ public class PdxpUdpServer extends Thread{
             bootstrap.group(group)
                     .channel(NioDatagramChannel.class)
                     .option(ChannelOption.SO_BROADCAST, true)
+                    .option(ChannelOption.SO_RCVBUF, 20 * 1024 * 1024)
+                    .option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(65535))
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         protected void initChannel(Channel channel) throws Exception {
