@@ -164,3 +164,38 @@ net-application:
   local-tsm-pdxpport: 12306
   local-tss-fepport: 12307
   local-zj-fepport: 12308
+
+
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:dbs/sqlite_database.db
+    username: root
+    password: root
+
+#Mybatis-plus配置
+mybatis-plus:
+  basePackage: com.phy.bcs.*.*.mapper
+  mapper-locations: classpath*:/mappings/**/*Mapper.xml
+  typeAliasesPackage: com.phy.bsc.*.*.model,com.phy.bcs.*.*.model.*
+  #typeEnumsPackage: com.phy.mpss.*.*.model.enums
+  global-config:
+    banner: false
+    id-type: 4
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 1
+    #驼峰下划线转换
+    db-column-underline: true
+    logic-delete-value: -1
+    logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+  type-handlers-package: com.phy.bcs.service.records.model.typehandler
+
+
+swagger:
+  api:
+    title: "BCS TITLE"
+    description: "BCS API 文档"
+    basepackage: "com.phy.bcs"
