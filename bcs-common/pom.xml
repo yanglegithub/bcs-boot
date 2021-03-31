@@ -21,7 +21,7 @@
         <hystrix.version>1.5.12</hystrix.version>
         <logstash-logback-encoder.version>5.2</logstash-logback-encoder.version>
         <fastjson.version>1.2.58</fastjson.version>
-        <guava.version>25.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <httpclient.version>4.3.5</httpclient.version>
         <camel.version>3.0.0-M3</camel.version>
     </properties>
